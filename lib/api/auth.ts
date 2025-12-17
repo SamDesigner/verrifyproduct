@@ -13,6 +13,10 @@ interface LoginUser {
   username?: string;
   password: string;
 }
+interface VerifyRegisterPayload {
+  token: string;
+  email: string;
+}
 
 export async function registerUser(payload: RegisterPayload): Promise<unknown> {
   if (!BASE_URL) {
@@ -51,6 +55,39 @@ export async function loginUser(payload: LoginUser): Promise<unknown> {
 
   if (!response.ok) {
     throw new Error(data.message || "Registration failed");
+  }
+
+  return data;
+}
+
+export async function verifyRegister(
+  payload: VerifyRegisterPayload
+): Promise<unknown> {
+  if (!BASE_URL) {
+    throw new Error("API base URL is not defined");
+  }
+
+  const response = await fetch(`${BASE_URL}/auth/verify/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const data: unknown = await response.json();
+  let errorMessage = "Registration failed";
+  if (
+    typeof data === "object" &&
+    data !== null &&
+    "message" in data &&
+    typeof (data as { message?: unknown }).message === "string"
+  ) {
+    errorMessage = (data as { message: string }).message;
+  }
+
+  if (!response.ok) {
+    throw new Error(errorMessage);
   }
 
   return data;
