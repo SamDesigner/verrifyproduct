@@ -2,15 +2,17 @@
 import React, { useState } from "react";
 import OTPInput from "react-otp-input";
 import Button from "@/app/components/(FormComponents)/Button";
-
-export default function OtpComponent() {
-  const [otp, setOtp] = useState("");
+interface OtpComponentProps {
+  value: string;
+  onChange: (otp: string) => void;
+}
+export default function OtpComponent({value,onChange}:OtpComponentProps) {
 
   return (
     <div className="flex flex-col items-center gap-4">
       <OTPInput
-        value={otp}
-        onChange={setOtp}
+        value={value}
+        onChange={onChange}
         numInputs={6}
         inputType="number"
         containerStyle="gap-2"
@@ -24,11 +26,7 @@ export default function OtpComponent() {
           />
         )}
       />
-      <div className="flex justify-end w-[450px]">
-        <div className="w-[150px]">
-          <Button text="Resend" />
-        </div>
-      </div>
+  
 
       {/* <button className="py-2 px-4 bg-blue-600 text-white rounded">
         Verify

@@ -2,16 +2,18 @@ import React from "react";
 interface ButtonProps {
   text: string;
   type?: string;
+  disabled?:boolean;
+  onClick?:() => void
 }
-const Button = ({ text, type }: ButtonProps) => {
+const Button = ({ text, type, disabled, onClick }: ButtonProps) => {
   return (
     <>
       {type === "outline" ? (
-        <button className="glass-glow-btn-outline  text-white rounded-md py-2 mt-2">
+        <button onClick={onClick} className="glass-glow-btn-outline  text-white rounded-md py-2 mt-2">
           {text}
         </button>
       ) : (
-        <button className="glass-glow-btn  text-white rounded-md py-2 mt-2">
+        <button onClick={onClick} disabled={disabled} className="glass-glow-btn  text-white rounded-md py-2 mt-2">
           {text}
         </button>
       )}

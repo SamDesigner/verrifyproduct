@@ -21,7 +21,7 @@ export default function LoginPage() {
           <input className="w-full outline-none " type="email" placeholder="Email" />
         </div>
         <div>
-          <PasswordInput />
+          <PasswordInput  />
         </div>
         <div className="flex justify-end text-gray-300">
           <Link href='/forgotpassword' className="hover:underline">Forgot Password</Link>

@@ -3,15 +3,17 @@
 import { useState } from "react";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { CiLock } from "react-icons/ci";
-
+import { UseFormRegisterReturn } from "react-hook-form";
 interface Props {
   placeholder?: string;
   className?: string;
+  register: UseFormRegisterReturn;
 }
 
 export default function PasswordInput({
   placeholder = "Password",
   className = "",
+  register
 }: Props) {
   const [show, setShow] = useState(false);
 
@@ -22,6 +24,7 @@ export default function PasswordInput({
         <input
           type={show ? "text" : "password"}
           placeholder={placeholder}
+          {...register}
           className={` pr-12 w-full outline-none ${className}`}
         />
       </div>
