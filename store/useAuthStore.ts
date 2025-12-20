@@ -1,5 +1,6 @@
+
 import { create } from "zustand";
-interface User {
+export interface User {
   id: string;
   firstName: string;
   lastName: string;
@@ -24,14 +25,18 @@ interface AuthState {
   user: User | null;
 
   setAuth: (data: {
-    accessToken: string;
-    refreshToken: string;
-    user: User;
+    accessToken: string | null;
+    refreshToken: string | null;
+    user: User | null;
   }) => void;
 
   logout: () => void;
 }
-
+interface LoginPayload {
+  email?:string;
+  username?:string;
+  password: string
+}
 export const useAuthStore = create<AuthState>((set) => ({
   accessToken: null,
   refreshToken: null,
@@ -58,6 +63,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     localStorage.removeItem("auth");
   },
 }));
+
 
 export const initializeAuthStore = () => {
   const stored = localStorage.getItem("auth");

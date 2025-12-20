@@ -8,12 +8,13 @@ interface Props {
   placeholder?: string;
   className?: string;
   register: UseFormRegisterReturn;
+  
 }
 
 export default function PasswordInput({
   placeholder = "Password",
   className = "",
-  register
+  register,
 }: Props) {
   const [show, setShow] = useState(false);
 
@@ -22,6 +23,7 @@ export default function PasswordInput({
       <div className="w-full flex gap-3 ">
         <CiLock size={20} />
         <input
+     
           type={show ? "text" : "password"}
           placeholder={placeholder}
           {...register}
