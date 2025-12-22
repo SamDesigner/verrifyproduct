@@ -1,5 +1,6 @@
-
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
+import { getCurrentUser } from "@/lib/api/user";
 export interface User {
   id: string;
   firstName: string;
@@ -19,6 +20,7 @@ export interface User {
   isGoogleLogin: boolean;
   isEnabled: boolean;
 }
+
 interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
@@ -32,43 +34,44 @@ interface AuthState {
 
   logout: () => void;
 }
-interface LoginPayload {
-  email?:string;
-  username?:string;
-  password: string
-}
-export const useAuthStore = create<AuthState>((set) => ({
-  accessToken: null,
-  refreshToken: null,
-  user: null,
 
-  setAuth: ({ accessToken, refreshToken, user }) => {
-    set({
-      accessToken,
-      refreshToken,
-      user,
-    });
-    localStorage.setItem(
-      "auth",
-      JSON.stringify({ user, accessToken, refreshToken })
-    );
-  },
-
-  logout: () => {
-    set({
+export const useAuthStore = create<AuthState>()(
+  persist(
+    (set) => ({
       accessToken: null,
       refreshToken: null,
       user: null,
+
+      setAuth: ({ accessToken, refreshToken, user }) => {
+        set({ accessToken, refreshToken, user });
+      },
+
+      logout: () => {
+        set({
+          accessToken: null,
+          refreshToken: null,
+          user: null,
+        });
+      },
+    }),
+    {
+      name: "auth", 
+    }
+  )
+);
+export async function initializeUser() {
+  const token = useAuthStore.getState().accessToken;
+  if (!token) return;
+
+  try {
+    const user = await getCurrentUser(token);
+    useAuthStore.getState().setAuth({
+      accessToken: token,
+      refreshToken: useAuthStore.getState().refreshToken,
+      user,
     });
-    localStorage.removeItem("auth");
-  },
-}));
-
-
-export const initializeAuthStore = () => {
-  const stored = localStorage.getItem("auth");
-  if (stored) {
-    const { user, accessToken, refreshToken } = JSON.parse(stored);
-    useAuthStore.getState().setAuth({ user, accessToken, refreshToken });
+  } catch (err) {
+    console.error("Failed to fetch current user:", err);
+    useAuthStore.getState().logout();
   }
-};
+}

@@ -1,18 +1,49 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "../components/(sidebar)/Sidebar";
-
+import { initializeUser, useAuthStore } from "@/store/useAuthStore";
+import { toastError } from "@/lib/toast/toast";
+import { useRouter } from "next/navigation";
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const { accessToken, user } = useAuthStore();
+  const router = useRouter()
+  useEffect(() => {
+    const hydrateUser = async () => {
+        if (!accessToken) {
+        router.push("/");
+        return;
+      }
+      if (!user) {
+        try {
+          await initializeUser();
+        } catch (err) {
+          toastError(err instanceof Error ? err.message : "Failed to load user");
+          router.push("/");
+          return;
+        }
+      }
+      setLoading(false); 
+    };
 
+    hydrateUser();
+  }, [accessToken, user,router]);
+  // Loader when data is fetched
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen text-white">
+        Loading user data...
+      </div>
+    );
+  }
   return (
     <div className="flex h-screen bg-gray-100">
-
       {/* Mobile Sidebar Overlay */}
       {open && (
         <div

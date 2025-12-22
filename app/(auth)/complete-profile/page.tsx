@@ -1,46 +1,58 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { updateUser, UpdateUserPayload } from "@/lib/api/user"
+import { useEffect } from "react";
+import { updateUser, UpdateUserPayload } from "@/lib/api/user";
 import { toastError } from "@/lib/toast/toast";
+import { FileUploadResponse } from "@/lib/api/file";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/useAuthStore";
 import { completeProfileSchema } from "@/lib/validation/completeProfileSchema";
 import Button from "@/app/components/(FormComponents)/Button";
-
+import FileUpload from "@/app/components/(FormComponents)/FileUpload";
+// import Image from "next/image";
 type CompleteProfileFormData = UpdateUserPayload;
 
 export default function CompleteProfilePage() {
   const router = useRouter();
   const { user } = useAuthStore((state) => state);
-
+console.log('This is the user', user)
   const {
     register,
     handleSubmit,
+    setValue,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<CompleteProfileFormData>({
-    resolver: yupResolver(completeProfileSchema),
-    defaultValues: {
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      username: user?.username || "",
-      email: user?.email || "",
-      address: user?.address || "",
-      phoneNumber: user?.phoneNumber || "",
-      city: user?.city || "",
-      state: user?.state || "",
-      dob: user?.dob ? new Date(user.dob).toISOString().slice(0, 10) : "",
-      profileImageUrl: user?.profileImage || "",
-    },
-  });
+    resolver: yupResolver(completeProfileSchema),});
+useEffect(() => {
+    if (user) {
+      reset({
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        username: user.username || "",
+        email: user.email || "",
+        address: user.address || "",
+        phoneNumber: user.phoneNumber || "",
+        city: user.city || "",
+        state: user.state || "",
+        dob: user.dob ? user.dob.slice(0, 10) : "",
+        profileImageUrl: user.profileImage || "",
+      });
+    }
+  }, [user, reset]);
 
   const onSubmit = async (data: CompleteProfileFormData) => {
     try {
       await updateUser(data);
-      router.push("/"); // redirect to dashboard/home after completion
+      router.push("/dashboard");
     } catch (err) {
       toastError(err instanceof Error ? err.message : "Update failed");
     }
+  };
+  const handleFileUploadSuccess = (fileData: FileUploadResponse) => {
+    // Update the form value for profileImageUrl
+    setValue("profileImageUrl", fileData.url);
   };
 
   return (
@@ -116,15 +128,29 @@ export default function CompleteProfilePage() {
           className="glass-input"
         />
         <p className="text-red-400 text-sm">{errors.dob?.message}</p>
-
-        <input
-          placeholder="Profile Image URL"
-          {...register("profileImageUrl")}
-          className="glass-input"
+        {/* {getValues("profileImageUrl") && (
+          <div className="flex justify-center mb-2">
+            <Image
+              src={getValues("profileImageUrl")}
+              alt="Profile Preview"
+              className="w-32 h-32 rounded-full object-cover"
+            />
+          </div>
+        )} */}
+        <FileUpload
+          fileType="PROFILE_PICTURE"
+          label="Profile Picture"
+          onUploadSuccess={handleFileUploadSuccess}
+          allowedTypes={["image/jpeg", "image/png"]}
         />
-        <p className="text-red-400 text-sm">{errors.profileImageUrl?.message}</p>
+        <p className="text-red-400 text-sm">
+          {errors.profileImageUrl?.message}
+        </p>
 
-        <Button text={isSubmitting ? "Saving..." : "Save Profile"} disabled={isSubmitting} />
+        <Button
+          text={isSubmitting ? "Saving..." : "Save Profile"}
+          disabled={isSubmitting}
+        />
       </form>
     </div>
   );

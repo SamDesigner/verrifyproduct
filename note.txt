@@ -1,0 +1,116 @@
+{
+    "id": "6eaf4634-abbd-4de7-aebd-a0816b9308bf",
+    "firstName": "Samuel",
+    "lastName": "Olabode",
+    "email": "kahisi8551@fftube.com",
+    "username": "JDoee",
+    "role": "USER",
+    "dob": "2000-02-05",
+    "phoneNumber": "09023046043",
+    "address": "National water resources institute PMB 2309. Mando Kaduna",
+    "city": "OGBOMOSO",
+    "state": "Oyo",
+    "lastLogin": "2025-12-22T09:35:15.950Z",
+    "profileImage": null,
+    "is2fa": false,
+    "isVerified": false,
+    "isGoogleLogin": false,
+    "isEnabled": true
+}
+
+
+
+Old Profile Page Code
+"use client";
+import { useAuthStore } from "@/store/useAuthStore";
+import Image from "next/image";
+import CoverPhoto from "@/public/images/coverPhoto.png";
+import AvatarImage from "@/public/images/avatar.png";
+import Link from "next/link";
+import Button from "@/app/components/(FormComponents)/Button";
+import VerifyUser from '@/public/images/verifyUser.png'
+const Page = () => {
+  const { user } = useAuthStore();
+  if (!user) {
+    return <p className="text-white text-center mt-10">Loading user data...</p>;
+  }
+  const profileSrc = user.profileImage || AvatarImage;
+  const ProfileData = [
+    { label: "First Name", value: user.firstName },
+    { label: "Last Name", value: user.lastName },
+    { label: "Email Address", value: user.email },
+    { label: "Username", value: user.username },
+    { label: "Date of Birth", value: user.dob },
+    { label: "Phone Number", value: user.phoneNumber },
+    { label: "Address", value: user.address },
+    { label: "City", value: user.city },
+    { label: "State", value: user.state },
+  ];
+  return (
+    <div className="flex gap-5">
+      <div className=" bg-gray-900 w-full p-5 flex flex-col gap-[50px]">
+        <div className="w-full">
+          <Image
+            className="h-[40vh] w-full object-cover"
+            src={CoverPhoto}
+            alt="Cover Photo"
+          />
+        </div>
+        <div className="flex">
+          <div className="w-[20%]">
+            <div className="w-32 h-32 relative mb-4 ">
+              <Image
+                src={profileSrc}
+                alt="Profile Picture"
+                fill
+                className="rounded-full object-cover"
+              />
+            </div>
+          </div>
+
+          <div className="w-[80%] flex flex-col gap-2.5">
+            <div>
+              <Link href="/">
+                <h1 className="text-[30px] text-white font-semibold">
+                  {user.firstName} {user.lastName}
+                </h1>
+
+              </Link>
+            </div>
+            <div className="flex gap-2 items-center text-white">
+              <Image src={VerifyUser} alt="Verified User Icon" className="w-5 h-5" />
+              Verrify User
+            </div>
+            <div className="flex gap-10 w-[400px] ">
+              <Button text="Personal Profile" />
+              <Button text="Company Profile" type="bordered" />
+            </div>
+          </div>
+          {/* <div>
+            <strong>First Name:</strong> {user.firstName}
+          </div> */}
+        </div>
+        <div className="bg_glass_glow w-full flex flex-col gap-[30px]">
+          <div className="flex justify-between text-white">
+            <h1 className="text-[25px] font-semibold">Personal Info</h1>
+            <button className="border h-fit border-gray-300 rounded-xl text-gray-300 py-1 px-5">
+              Edit Profile
+            </button>
+          </div>
+          <div className="grid grid-cols-3 gap-[30px]">
+            {
+              ProfileData.map((data,index) => (
+                  <div key={index} className="flex flex-col">
+                      <h3 className="font-semibold  text-white">{data.label}</h3>
+                      <p className="text-gray-300 text-[14px]">{data.value}</p>
+                  </div>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Page;

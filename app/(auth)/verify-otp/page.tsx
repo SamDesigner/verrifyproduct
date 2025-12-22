@@ -44,7 +44,7 @@ const Page = () => {
       })
       toastSuccess("Account verified successfully 🎉");
 
-      router.push("/");
+      router.push("/complete-profile");
     } catch (error) {
       if (error instanceof Error) {
         toastError(error.message);
