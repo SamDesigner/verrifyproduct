@@ -3,7 +3,7 @@
 import { FiUser } from "react-icons/fi";
 import Link from "next/link";
 import { loginUser } from "@/lib/api/auth";
-// import { useAuthStore } from "@/store/useAuthStore";
+import { useAuthStore } from "@/store/useAuthStore";
 import { toastSuccess, toastError } from "@/lib/toast/toast";
 import { useRouter } from "next/navigation";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -16,6 +16,7 @@ type LoginFormData = InferType<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   // const setAuth = useAuthStore((state) => state.setAuth);
+  const setAuth = useAuthStore((state) => state.setAuth);
   const {
     register,
     handleSubmit,
@@ -25,16 +26,21 @@ export default function LoginPage() {
   });
   const onSubmit = async (data: LoginFormData) => {
     try {
-       await loginUser(data);
+      const res = await loginUser(data);
 
-      // setAuth({
-      //   accessToken: res.accessToken,
-      //   refreshToken: res.refreshToken,
-      //   user: res.user,
-      // });
-
+      setAuth({
+        accessToken: res.accessToken,
+        refreshToken: res.refreshToken,
+        user: res.user,
+      });
+      const {user } = res;
+      console.log("This is res", res);
       toastSuccess("Login successful 🎉");
-      router.push("/dashboard");
+      if (user.role === "USER") {
+        router.push("/dashboard");
+      }else{
+        router.push("/admin")
+      }
     } catch (error) {
       toastError(error instanceof Error ? error.message : "Login failed");
     }
@@ -70,7 +76,10 @@ export default function LoginPage() {
             Forgot Password
           </Link>
         </div>
-        <Button  text={isSubmitting ? "Logging in..." : "Login"}  disabled={isSubmitting} />
+        <Button
+          text={isSubmitting ? "Logging in..." : "Login"}
+          disabled={isSubmitting}
+        />
       </form>
       <div className="flex justify-center gap-2 pt-3 ">
         <p className="text-gray-200">Don&apos;t have an account?</p>

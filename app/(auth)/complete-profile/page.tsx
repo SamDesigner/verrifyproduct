@@ -16,7 +16,7 @@ type CompleteProfileFormData = UpdateUserPayload;
 export default function CompleteProfilePage() {
   const router = useRouter();
   const { user } = useAuthStore((state) => state);
-console.log('This is the user', user)
+  console.log("This is the user", user);
   const {
     register,
     handleSubmit,
@@ -24,8 +24,9 @@ console.log('This is the user', user)
     reset,
     formState: { errors, isSubmitting },
   } = useForm<CompleteProfileFormData>({
-    resolver: yupResolver(completeProfileSchema),});
-useEffect(() => {
+    resolver: yupResolver(completeProfileSchema),
+  });
+  useEffect(() => {
     if (user) {
       reset({
         firstName: user.firstName || "",
@@ -64,12 +65,15 @@ useEffect(() => {
         className="flex flex-col gap-4 mt-5"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <input
-          placeholder="First Name"
-          {...register("firstName")}
-          className="glass-input"
-        />
-        <p className="text-red-400 text-sm">{errors.firstName?.message}</p>
+        <div className="flex flex-col gap-2">
+          <label className="text-gray-300">First Name</label>
+          <input
+            placeholder="First Name"
+            {...register("firstName")}
+            className="glass-input"
+          />
+          <p className="text-red-400 text-sm">{errors.firstName?.message}</p>
+        </div>
 
         <input
           placeholder="Last Name"

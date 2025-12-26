@@ -10,7 +10,6 @@ import PasswordInput from "@/app/components/(FormComponents)/PasswordInput";
 import Button from "@/app/components/(FormComponents)/Button";
 import Link from "next/link";
 import { signupSchema } from "@/lib/validation/signupSchema";
-
 type SignupFormData = InferType<typeof signupSchema>;
 const Page = () => {
   const router = useRouter();
@@ -27,6 +26,7 @@ const Page = () => {
     try {
       await registerUser(data);
       router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
+
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);

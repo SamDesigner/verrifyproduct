@@ -18,7 +18,24 @@
     "isEnabled": true
 }
 
+PROFILE_PICTURE
+PROOF_OF_ADDRESS
+COMPANY_PROFILE_PICTURE
+CERTIFICATE_OF_OCCUPANCY
+CONTRACT_OF_SALE
+SURVEY_PLAN
+LETTER_OF_INTENT
+DEED_OF_CONVEYANCE
 
+Company Profile Page Status
+NOT_VERIFIED
+PENDING
+VERIFIED
+REJECTED
+
+We need to have a way to give the users Message on the Frontend
+1) Design Team will take note of that
+2)
 
 Old Profile Page Code
 "use client";

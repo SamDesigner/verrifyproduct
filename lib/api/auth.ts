@@ -1,5 +1,5 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-import { toastSuccess, toastError } from "@/lib/toast/toast";
+// import { toastSuccess, toastError } from "@/lib/toast/toast";
 import { useAuthStore } from "@/store/useAuthStore";
 import type { User } from "@/store/useAuthStore";
 interface RegisterPayload {
@@ -53,9 +53,9 @@ export async function registerUser(payload: RegisterPayload): Promise<unknown> {
   });
   const data = await response.json();
   console.log("This is the message", data);
-  toastSuccess(data.message || "Account Success");
+
   if (!response.ok) {
-    toastError(data.description.message || "Registration failed");
+
     throw new Error(data.description.message || "Registration failed");
   }
 
@@ -77,17 +77,10 @@ export async function loginUser(payload: LoginUser):Promise<AuthData> {
   const data: LoginResponse = await response.json();
   console.log('This is the Data from the login User',data)
   if (!response.ok || !data.success) {
-    toastError(data.message || "Login failed");
     throw new Error(data.message);
   }
-  const { accessToken, refreshToken, user } = data.data;
-   useAuthStore.getState().setAuth({
-    accessToken,
-    refreshToken,
-    user,
-  });
-  toastSuccess("Login successful");
-  return {accessToken, refreshToken, user};
+
+  return data.data;
 }
 
 export async function verifyRegister(
@@ -126,11 +119,8 @@ export async function verifyRegister(
   return data;
 }
 
-export async function refreshAccessToken() {
-  const { refreshToken, accessToken, user, setAuth, logout } =
-    useAuthStore.getState();
-  if (!refreshToken || !user) return;
-  try {
+export async function refreshAccessToken(refreshToken:string) {
+
     const response = await fetch(`${BASE_URL}/auth/refresh/token`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -140,17 +130,12 @@ export async function refreshAccessToken() {
       console.log("This is the failed response", response);
       throw new Error("Failed to refresh token");
     }
-    const data:{refreshToken: string} = await response.json();
-    setAuth({
-      accessToken,
-      refreshToken: data.refreshToken,
-      user,
-    });
 
-    return data.refreshToken;
-  } catch (err) {
-    logout();
-    console.log("There is an error", err);
-    return null;
-  }
+   
+ return response.json() as Promise<{
+    accessToken: string;
+    refreshToken: string;
+  }>;
+  
+  
 }

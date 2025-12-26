@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import showcaseImage from "@/public/images/showcaseImage.png";
+
 export default function AuthLayout({
   children,
 }: {

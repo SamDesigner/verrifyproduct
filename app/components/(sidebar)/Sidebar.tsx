@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { MdDashboard } from "react-icons/md";
 import { HiOutlineFolderOpen } from "react-icons/hi2";
+import { MdOutlineMapsHomeWork } from "react-icons/md";
+import { FaUser } from "react-icons/fa";
 import { PiWarehouseBold } from "react-icons/pi";
 export const sidebarLinks = [
   {
@@ -10,31 +12,36 @@ export const sidebarLinks = [
     href: "/dashboard",
     icon: MdDashboard,
   },
-  {
-    label: "Portfolio",
-    href: "/dashboard/portfolio",
-    icon: HiOutlineFolderOpen,
-  },
+  // {
+  //   label: "Portfolio",
+  //   href: "/dashboard/portfolio",
+  //   icon: HiOutlineFolderOpen,
+  // },
   {
     label: "Properties",
     href: "/dashboard/properties",
-    icon: PiWarehouseBold,
+    icon: MdOutlineMapsHomeWork,
   },
-  {
-    label: "Reviews",
-    href: "/dashboard/reviews",
-    icon: PiWarehouseBold,
-  },
-  {
-    label: "Map",
-    href: "/dashboard/map",
-    icon: PiWarehouseBold,
-  },
+  // {
+  //   label: "Reviews",
+  //   href: "/dashboard/reviews",
+  //   icon: PiWarehouseBold,
+  // },
+  // {
+  //   label: "Map",
+  //   href: "/dashboard/map",
+  //   icon: PiWarehouseBold,
+  // },
   {
     label: "Profile",
     href: "/dashboard/profile",
-    icon: PiWarehouseBold,
+    icon: FaUser,
   },
+  {
+    label: "Company Profiles",
+    href: "/dashboard/companyProfiles",
+    icon: PiWarehouseBold,
+  }
 ];
 
 export default function Sidebar({
@@ -101,18 +108,7 @@ export default function Sidebar({
             );
           })}
 
-          <a
-            href="/dashboard/profile"
-            className="hover:bg-gray-700 p-2 rounded"
-          >
-            Profile
-          </a>
-          <a
-            href="/dashboard/settings"
-            className="hover:bg-gray-700 p-2 rounded"
-          >
-            Settings
-          </a>
+ 
         </nav>
       </aside>
     </div>

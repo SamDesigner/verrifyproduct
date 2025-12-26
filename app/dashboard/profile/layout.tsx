@@ -68,7 +68,7 @@ export default function ProfileLayout({
               /> */}
             </Link>
 
-            <Link href="/dashboard/profile/company">
+            <Link href="/dashboard/profile/company-profile">
               <Button text="Company Profile" type={isCompany ? "" : "bordered"} />
 
               {/* <Button

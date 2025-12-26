@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getCurrentUser } from "@/lib/api/user";
+import { refreshAccessToken } from "@/lib/api/auth";
 export interface User {
   id: string;
   firstName: string;
@@ -25,6 +26,7 @@ interface AuthState {
   accessToken: string | null;
   refreshToken: string | null;
   user: User | null;
+  hasHydrated: boolean;
 
   setAuth: (data: {
     accessToken: string | null;
@@ -33,14 +35,16 @@ interface AuthState {
   }) => void;
 
   logout: () => void;
+  refreshTokens: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set,get) => ({
       accessToken: null,
       refreshToken: null,
       user: null,
+      hasHydrated: false,
 
       setAuth: ({ accessToken, refreshToken, user }) => {
         set({ accessToken, refreshToken, user });
@@ -51,27 +55,41 @@ export const useAuthStore = create<AuthState>()(
           accessToken: null,
           refreshToken: null,
           user: null,
+        });                                         
+      },
+      refreshTokens: async () => {
+        const { refreshToken, user } = get();
+        if (!refreshToken || !user) {
+          throw new Error("No refresh token or user");
+        }
+
+        const tokens = await refreshAccessToken(refreshToken);
+
+        set({
+          accessToken: tokens.accessToken,
+          refreshToken: tokens.refreshToken,
+          user,
         });
       },
     }),
     {
-      name: "auth", 
+      name: "auth",
+      onRehydrateStorage: () => () => {
+        useAuthStore.setState({ hasHydrated: true }); 
+      },
     }
   )
 );
+
 export async function initializeUser() {
-  const token = useAuthStore.getState().accessToken;
-  if (!token) return;
+  const { accessToken, hasHydrated } = useAuthStore.getState();
+
+  if (!hasHydrated || !accessToken) return;
 
   try {
-    const user = await getCurrentUser(token);
-    useAuthStore.getState().setAuth({
-      accessToken: token,
-      refreshToken: useAuthStore.getState().refreshToken,
-      user,
-    });
-  } catch (err) {
-    console.error("Failed to fetch current user:", err);
+    const user = await getCurrentUser(accessToken);
+    useAuthStore.setState({ user });
+  } catch {
     useAuthStore.getState().logout();
   }
 }
