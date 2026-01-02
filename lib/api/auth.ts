@@ -38,6 +38,44 @@ interface AuthData {
   refreshToken: string;
   user: User;
 }
+interface forgetPasswordResponse {
+  success: boolean;
+  message: string;
+  data: {
+    accessToken: string;
+    refreshToken: string;
+    user: {
+      id: string;
+      createdAt: string;
+      updatedAt: string;
+      deletedAt: string;
+    };
+  };
+  description: string;
+}
+
+export interface ResetPasswordPayload {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+export interface updatePasswordPayload {
+  oldPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}
+interface ResetPasswordResponse {
+  success: boolean;
+  message: string;
+  status: number;
+}
+interface updatePasswordResponse {
+  success: boolean;
+  message: string;
+  status: number;
+  description?:string
+}
+
 
 export async function registerUser(payload: RegisterPayload): Promise<unknown> {
   if (!BASE_URL) {
@@ -55,14 +93,13 @@ export async function registerUser(payload: RegisterPayload): Promise<unknown> {
   console.log("This is the message", data);
 
   if (!response.ok) {
-
     throw new Error(data.description.message || "Registration failed");
   }
 
   return data;
 }
 
-export async function loginUser(payload: LoginUser):Promise<AuthData> {
+export async function loginUser(payload: LoginUser): Promise<AuthData> {
   if (!BASE_URL) {
     throw new Error("API base URL is not defined");
   }
@@ -75,7 +112,7 @@ export async function loginUser(payload: LoginUser):Promise<AuthData> {
     body: JSON.stringify(payload),
   });
   const data: LoginResponse = await response.json();
-  console.log('This is the Data from the login User',data)
+  console.log("This is the Data from the login User", data);
   if (!response.ok || !data.success) {
     throw new Error(data.message);
   }
@@ -119,23 +156,105 @@ export async function verifyRegister(
   return data;
 }
 
-export async function refreshAccessToken(refreshToken:string) {
+export async function verifyForgotPassword(
+  payload: VerifyRegisterPayload
+): Promise<unknown> {
+  if (!BASE_URL) {
+    throw new Error("API base URL is not defined");
+  }
 
-    const response = await fetch(`${BASE_URL}/auth/refresh/token`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refreshToken }),
-    });
-    if (!response.ok) {
-      console.log("This is the failed response", response);
-      throw new Error("Failed to refresh token");
-    }
+  const response = await fetch(`${BASE_URL}/auth/verify/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
 
-   
- return response.json() as Promise<{
+  const data: unknown = await response.json();
+  console.log("This is the otp Data", data);
+
+  let errorMessage = "Registration failed";
+  if (
+    typeof data === "object" &&
+    data !== null &&
+    "message" in data &&
+    typeof (data as { message?: unknown }).message === "string"
+  ) {
+    errorMessage = (data as { message: string }).message;
+    console.log("This is the error message", errorMessage);
+  }
+
+  if (!response.ok) {
+    throw new Error(errorMessage);
+  }
+
+  return data;
+}
+export async function resetPassword(payload: ResetPasswordPayload) {
+  const response = await fetch(`${BASE_URL}/auth/reset-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+  const data: ResetPasswordResponse = await response.json();
+  console.log("This is the Data from the login User", data);
+  if (!response.ok || !data.success) {
+    throw new Error(data.message);
+  }
+
+  return data;
+}
+export async function updatePassword(payload: updatePasswordPayload) {
+    const { accessToken } = useAuthStore.getState();
+  const response = await fetch(`${BASE_URL}/user/updatePassword`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  const data: updatePasswordResponse = await response.json();
+  console.log("This is the Data from the update Password", data);
+  if (!response.ok || !data.success) {
+    throw new Error(data.message);
+  }
+
+  return data;
+}
+export async function refreshAccessToken(refreshToken: string) {
+  const response = await fetch(`${BASE_URL}/auth/refresh/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ refreshToken }),
+  });
+  if (!response.ok) {
+    console.log("This is the failed response", response);
+    throw new Error("Failed to refresh token");
+  }
+
+  return response.json() as Promise<{
     accessToken: string;
     refreshToken: string;
   }>;
-  
-  
+}
+
+export async function forgotPassword(
+  email: string
+): Promise<forgetPasswordResponse> {
+  const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email }),
+  });
+  console.log("This is the response for forgot password", response);
+  const data: forgetPasswordResponse = await response.json();
+  if (!response.ok || !data.success) {
+    console.log("There is an error", response);
+  }
+
+  return data;
 }

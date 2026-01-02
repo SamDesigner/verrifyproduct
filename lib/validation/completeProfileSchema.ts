@@ -11,10 +11,10 @@ export const completeProfileSchema = yup.object({
   state: yup.string().required("State is required"),
   dob: yup
     .string()
-    .required("Date of Birth is required")
+    .notRequired()
     .matches(
       /^\d{4}-\d{2}-\d{2}$/,
       "Date of Birth must be in YYYY-MM-DD format"
     ),
-  profileImageUrl: yup.string().url().required("Profile Image URL is required"),
+  profileImageUrl: yup.string().url().notRequired(),
 });

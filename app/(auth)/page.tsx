@@ -39,7 +39,7 @@ export default function LoginPage() {
       if (user.role === "USER") {
         router.push("/dashboard");
       }else{
-        router.push("/admin")
+        router.push("/dashboard/admin")
       }
     } catch (error) {
       toastError(error instanceof Error ? error.message : "Login failed");

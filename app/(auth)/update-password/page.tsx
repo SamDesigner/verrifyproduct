@@ -1,20 +1,19 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { resetPassword } from "@/lib/api/auth";
-import { resetPasswordSchema } from "@/lib/validation/resetPasswordSchema";
-import { IoMailOutline } from "react-icons/io5";
+import { updatePassword } from "@/lib/api/auth";
+import { updatePasswordSchema } from "@/lib/validation/updatePasswordSchema";
+
 import PasswordInput from "@/app/components/(FormComponents)/PasswordInput";
 import Button from "@/app/components/(FormComponents)/Button";
 import Link from "next/link";
 import { toastSuccess, toastError } from "@/lib/toast/toast";
 import { useRouter } from "next/navigation";
-type ResetPasswordForm = {
-  email: string;
-  password: string;
+type updatePasswordForm = {
+  oldPassword: string;
+  newPassword: string;
   confirmPassword: string;
 };
-
 
 const Page = () => {
   const router = useRouter();
@@ -22,18 +21,19 @@ const Page = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<ResetPasswordForm>({
-    resolver: yupResolver(resetPasswordSchema),
+  } = useForm<updatePasswordForm>({
+    resolver: yupResolver(updatePasswordSchema),
   });
 
-  const onSubmit = async (data: ResetPasswordForm) => {
+  const onSubmit = async (data: updatePasswordForm) => {
     try {
-      await resetPassword(data);
-      toastSuccess("Password reset successful");
+      await updatePassword(data);
+      toastSuccess("Password update successful");
       router.push("/");
     } catch (err) {
-      toastError("Password reset failed");
-      alert(err instanceof Error ? err.message : "Something went wrong");
+      toastError("Password update failed");
+      console.error('There was an error', err)
+    //   alert(err instanceof Error ? err.message : "Something went wrong");
     }
   };
 
@@ -41,33 +41,33 @@ const Page = () => {
     <div className="flex flex-col gap-5">
       <div>
         <h2 className="text-xl text-gray-100 font-bold  text-center text-[40px]">
-          Reset Password
+          Update Password
         </h2>
         <p className="text-gray-100 text-center">Set up a new password</p>
       </div>
       <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col gap-2 flex-1">
-          <label className="text-gray-200">First name</label>
-          <div className="glass-input flex gap-2">
-            <IoMailOutline className="text-white" size={20} />
-            <input
-              type="email"
-              placeholder="john@mail.com"
-              {...register("email")}
-            />
-          </div>
-          <p>{errors.email?.message}</p>
+          <label className="text-gray-200">Old Password</label>
+
+          <PasswordInput register={register("oldPassword")} />
+
+          <p className='text-red-500'>{errors.oldPassword?.message}</p>
         </div>
         <div className="flex flex-col gap-2 flex-1">
-          <label className="text-gray-200">Password</label>
-          <PasswordInput register={register("password")} />
+          <label className="text-gray-200">New Password</label>
+          <PasswordInput register={register("newPassword")} />
+          <p className='text-red-500'>{errors.newPassword?.message}</p>
         </div>
         <div className="flex flex-col gap-2 flex-1">
           <label className="text-gray-200">Confirm Password</label>
           <PasswordInput register={register("confirmPassword")} />
+          <p className='text-red-500'>{errors.confirmPassword?.message}</p>
         </div>
         <div>
-          <Button disabled={isSubmitting} text={isSubmitting ? 'Resetting....' : 'Reset Password'} />
+          <Button
+            disabled={isSubmitting}
+            text={isSubmitting ? "Updating...." : "Update Password"}
+          />
         </div>
       </form>
       <div className="flex justify-center items-center  mt-5 gap-2 text-gray-300">

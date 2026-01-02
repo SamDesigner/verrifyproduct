@@ -2,46 +2,65 @@ import Logo from "@/public/images/Logo.png";
 import Image from "next/image";
 import Link from "next/link";
 import { MdDashboard } from "react-icons/md";
-import { HiOutlineFolderOpen } from "react-icons/hi2";
+// import { HiOutlineFolderOpen } from "react-icons/hi2";
+import { IoSettingsOutline } from "react-icons/io5";
 import { MdOutlineMapsHomeWork } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { PiWarehouseBold } from "react-icons/pi";
+import { useAuthStore } from "@/store/useAuthStore";
+import { usePathname } from "next/navigation";
+
 export const sidebarLinks = [
   {
     label: "Dashboard",
     href: "/dashboard",
     icon: MdDashboard,
+    roles: ["USER", "SUPER_ADMIN"],
   },
-  // {
-  //   label: "Portfolio",
-  //   href: "/dashboard/portfolio",
-  //   icon: HiOutlineFolderOpen,
-  // },
+
   {
     label: "Properties",
     href: "/dashboard/properties",
     icon: MdOutlineMapsHomeWork,
+    roles: ["USER"],
   },
-  // {
-  //   label: "Reviews",
-  //   href: "/dashboard/reviews",
-  //   icon: PiWarehouseBold,
-  // },
-  // {
-  //   label: "Map",
-  //   href: "/dashboard/map",
-  //   icon: PiWarehouseBold,
-  // },
+
   {
     label: "Profile",
     href: "/dashboard/profile",
     icon: FaUser,
+    roles: ["USER", "SUPER_ADMIN"],
   },
   {
     label: "Company Profiles",
-    href: "/dashboard/companyProfiles",
+    href: "/dashboard/admin/company-profiles",
     icon: PiWarehouseBold,
-  }
+    roles: ["SUPER_ADMIN"],
+  },
+  {
+    label: "User Management",
+    href: "/dashboard/admin/user-management",
+    icon: PiWarehouseBold,
+    roles: ["SUPER_ADMIN"],
+  },
+  {
+    label: "Company Management",
+    href: "/dashboard/admin/company-management",
+    icon: PiWarehouseBold,
+    roles: ["SUPER_ADMIN"],
+  },
+  {
+    label: "Property Management",
+    href: "/s",
+    icon: PiWarehouseBold,
+    roles: ["SUPER_ADMIN"],
+  },
+  {
+    label: "Settings",
+    href: "/dashboard/settings",
+    icon: IoSettingsOutline,
+    roles: ["USER", "SUPER_ADMIN"],
+  },
 ];
 
 export default function Sidebar({
@@ -51,6 +70,9 @@ export default function Sidebar({
   open: boolean;
   setOpen: (v: boolean) => void;
 }) {
+  const pathname = usePathname();
+  const { user } = useAuthStore();
+  if (!user) return null;
   return (
     <div>
       {/* Mobile Sidebar */}
@@ -86,7 +108,7 @@ export default function Sidebar({
       </aside>
 
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:h-full bg-gray-900 text-white p-4 gap-10">
+      {/* <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:h-full bg-gray-900 text-white p-4 gap-10">
         <div>
           <Image src={Logo} alt="Logo" />
         </div>
@@ -109,6 +131,32 @@ export default function Sidebar({
           })}
 
  
+        </nav>
+      </aside> */}
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:h-full bg-gray-900 text-white p-4 gap-10">
+        <div>
+          <Image src={Logo} alt="Logo" />
+        </div>
+        <nav className="flex flex-col gap-3">
+          {sidebarLinks
+            .filter((link) => link.roles.includes(user.role))
+            .map((link) => {
+              const Icon = link.icon;
+              const isActive = pathname.startsWith(link.href);
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-md transition
+                  ${isActive ? "bg-blue-600 text-white" : "hover:bg-gray-800"}
+                `}
+                >
+                  <Icon size={18} />
+                  {link.label}
+                </Link>
+              );
+            })}
         </nav>
       </aside>
     </div>

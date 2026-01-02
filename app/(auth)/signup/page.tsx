@@ -147,7 +147,7 @@ const Page = () => {
           </form>
           <div className="flex justify-center gap-2 pt-3 ">
             <p className="text-gray-200">Already have an account?</p>
-            <Link className="font-semibold text-white" href="/login">
+            <Link className="font-semibold text-white" href="/">
               Log in
             </Link>
           </div>

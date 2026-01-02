@@ -5,9 +5,10 @@ import { useState } from "react";
 import { toastSuccess, toastError } from "@/lib/toast/toast";
 import Link from "next/link";
 import Button from "@/app/components/(FormComponents)/Button";
-import { verifyRegister } from "@/lib/api/auth";
+import { verifyForgotPassword} from "@/lib/api/auth";
 import { useAuthStore } from "@/store/useAuthStore";
 import {User} from '@/lib/types/user'
+
 const Page = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
@@ -25,11 +26,11 @@ const Page = () => {
       toastError("Please enter a valid OTP");
       return;
     }
- 
+
     try {
       setLoading(true);
 
-      const data = await verifyRegister({
+      const data = await verifyForgotPassword({
         email,
         token: otp,
       }) as {
@@ -37,6 +38,7 @@ const Page = () => {
         refreshToken:string,
         user:User
       };
+      console.log('This is the response for the OTTP', data)
       setAuth({
         accessToken:data.accessToken,
         refreshToken:data.refreshToken,
@@ -44,7 +46,7 @@ const Page = () => {
       })
       toastSuccess("Account verified successfully 🎉");
 
-      router.push("/");
+      router.push("/reset-password");
     } catch (error) {
       if (error instanceof Error) {
         toastError(error.message);
@@ -66,6 +68,7 @@ const Page = () => {
           <span className="font-bold text-purple-300">{email}</span> <br /> Code
           expires in 10mins
         </p>
+        {/* <p className="text-white">Forgot Password</p> */}
       </div>
       <Otp onChange={setOtp} value={otp} />
       <div className="flex justify-end w-[450px]">
