@@ -117,13 +117,13 @@ export default function PropertyMap() {
 
     try {
       const bounds = map.getBounds();
-
+if (!bounds) return;
       const data = await getPropertiesByViewport({
-        north: bounds.getNorth(),
-        south: bounds.getSouth(),
-        east: bounds.getEast(),
-        west: bounds.getWest(),
-        zoom: map.getZoom(),
+        north: bounds.getNorth() ?? 0,
+        south: bounds.getSouth() ?? 0,
+        east: bounds.getEast() ?? 0 ,
+        west: bounds.getWest() ?? 0,
+        zoom: map.getZoom() ,
       });
       console.log("The data from endpoint", data);
       setProperties(data);
