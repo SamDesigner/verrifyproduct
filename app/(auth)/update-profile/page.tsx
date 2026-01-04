@@ -1,8 +1,9 @@
 "use client";
+
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useEffect } from "react";
-import { updateUser, UpdateUserPayload } from "@/lib/api/user";
+import { updateUser } from "@/lib/api/user";
 import { toastError } from "@/lib/toast/toast";
 import { FileUploadResponse } from "@/lib/api/file";
 import { useRouter } from "next/navigation";
@@ -10,13 +11,28 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { completeProfileSchema } from "@/lib/validation/completeProfileSchema";
 import Button from "@/app/components/(FormComponents)/Button";
 import FileUpload from "@/app/components/(FormComponents)/FileUpload";
-// import Image from "next/image";
-type CompleteProfileFormData = UpdateUserPayload;
+
+// Define the form data type
+interface CompleteProfileFormData {
+  firstName: string;
+  lastName: string;
+  username: string;
+  email: string;
+  address: string;
+  phoneNumber: string;
+  city: string;
+  state: string;
+
+  // Required keys for form, optional values
+  dob: string | null | undefined;
+  profileImageUrl: string | null | undefined;
+}
 
 export default function CompleteProfilePage() {
   const router = useRouter();
   const { user } = useAuthStore();
   console.log("This is the user", user);
+
   const {
     register,
     handleSubmit,
@@ -26,6 +42,7 @@ export default function CompleteProfilePage() {
   } = useForm<CompleteProfileFormData>({
     resolver: yupResolver(completeProfileSchema),
   });
+
   useEffect(() => {
     if (user) {
       reset({
@@ -37,22 +54,37 @@ export default function CompleteProfilePage() {
         phoneNumber: user.phoneNumber || "",
         city: user.city || "",
         state: user.state || "",
-        dob: user.dob ? user.dob.slice(0, 10) : "",
-        profileImageUrl: user.profileImage || "",
+        dob: user.dob ? user.dob.slice(0, 10) : null,
+        profileImageUrl: user.profileImage || null,
       });
     }
   }, [user, reset]);
 
+  // Submit handler
   const onSubmit = async (data: CompleteProfileFormData) => {
     try {
-      await updateUser(data);
+      // Map form data to API payload
+      await updateUser({
+        firstName: data.firstName,
+        lastName: data.lastName,
+        username: data.username,
+        email: data.email,
+        address: data.address,
+        phoneNumber: data.phoneNumber,
+        city: data.city,
+        state: data.state,
+        dob: data.dob || undefined, // optional in payload
+        profileImageUrl: data.profileImageUrl || undefined, // optional in payload
+      });
+
       router.push("/dashboard");
     } catch (err) {
       toastError(err instanceof Error ? err.message : "Update failed");
     }
   };
+
+  // File upload success handler
   const handleFileUploadSuccess = (fileData: FileUploadResponse) => {
-    // Update the form value for profileImageUrl
     setValue("profileImageUrl", fileData.url);
   };
 
@@ -65,6 +97,7 @@ export default function CompleteProfilePage() {
         className="flex flex-col gap-4 mt-5"
         onSubmit={handleSubmit(onSubmit)}
       >
+        {/* First & Last Name */}
         <div className="flex gap-3">
           <div className="flex flex-1 flex-col gap-2">
             <label className="text-gray-300">First Name</label>
@@ -85,6 +118,8 @@ export default function CompleteProfilePage() {
             <p className="text-red-400 text-sm">{errors.lastName?.message}</p>
           </div>
         </div>
+
+        {/* Username & Email */}
         <div className="flex gap-3">
           <div className="flex flex-1 flex-col gap-2">
             <label className="text-gray-300">Username</label>
@@ -106,6 +141,8 @@ export default function CompleteProfilePage() {
             <p className="text-red-400 text-sm">{errors.email?.message}</p>
           </div>
         </div>
+
+        {/* Phone & City */}
         <div className="flex gap-3">
           <div className="flex flex-1 flex-col gap-2">
             <label className="text-gray-300">Phone Number</label>
@@ -120,7 +157,6 @@ export default function CompleteProfilePage() {
           </div>
           <div className="flex flex-1 flex-col gap-2">
             <label className="text-gray-300">City</label>
-
             <input
               placeholder="City"
               {...register("city")}
@@ -129,6 +165,8 @@ export default function CompleteProfilePage() {
             <p className="text-red-400 text-sm">{errors.city?.message}</p>
           </div>
         </div>
+
+        {/* State & DOB */}
         <div className="flex gap-3">
           <div className="flex flex-1 flex-col gap-2">
             <label className="text-gray-300">State</label>
@@ -150,6 +188,8 @@ export default function CompleteProfilePage() {
             <p className="text-red-400 text-sm">{errors.dob?.message}</p>
           </div>
         </div>
+
+        {/* Address & Profile Upload */}
         <div className="flex gap-3">
           <div className="flex flex-1 flex-col gap-2">
             <label className="text-gray-300">Address</label>
@@ -172,16 +212,6 @@ export default function CompleteProfilePage() {
             </p>
           </div>
         </div>
-
-        {/* {getValues("profileImageUrl") && (
-          <div className="flex justify-center mb-2">
-            <Image
-              src={getValues("profileImageUrl")}
-              alt="Profile Preview"
-              className="w-32 h-32 rounded-full object-cover"
-            />
-          </div>
-        )} */}
 
         <Button
           text={isSubmitting ? "Saving..." : "Save Profile"}

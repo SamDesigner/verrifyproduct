@@ -10,8 +10,8 @@ export interface UpdateUserPayload {
   phoneNumber: string;
   city: string;
   state: string;
-  dob: string;
-  profileImageUrl: string;
+  dob?: string | null | undefined;
+  profileImageUrl?: string | null | undefined;
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;

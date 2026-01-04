@@ -9,12 +9,6 @@ export const completeProfileSchema = yup.object({
   phoneNumber: yup.string().required("Phone Number is required"),
   city: yup.string().required("City is required"),
   state: yup.string().required("State is required"),
-  dob: yup
-    .string()
-    .notRequired()
-    .matches(
-      /^\d{4}-\d{2}-\d{2}$/,
-      "Date of Birth must be in YYYY-MM-DD format"
-    ),
-  profileImageUrl: yup.string().url().notRequired(),
+  dob: yup.string().nullable().notRequired(),
+  profileImageUrl: yup.string().nullable().notRequired(),
 });
