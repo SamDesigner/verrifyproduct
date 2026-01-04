@@ -26,7 +26,7 @@ export interface CreateCompanyPayload {
   address: string;
   city: string;
   state: string;
-  // isSubmitted:boolean
+  isSubmitted:boolean
 
 }
 export interface GetCompanyResponse {
