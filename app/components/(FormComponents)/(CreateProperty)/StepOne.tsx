@@ -45,6 +45,26 @@ const StepOne = () => {
             className="glass-input"
           />
         </div>
+        <div className="flex gap-2">
+          <div className="flex flex-col gap-2">
+            <label className="text-white text-[18px]">City</label>
+            <input
+              placeholder="City"
+              value={propertyDraft.city}
+              onChange={(e) => updateDraftField("city", e.target.value)}
+              className="glass-input"
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="text-white text-[18px]">State</label>
+            <input
+              placeholder="State"
+              value={propertyDraft.state}
+              onChange={(e) => updateDraftField("state", e.target.value)}
+              className="glass-input"
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

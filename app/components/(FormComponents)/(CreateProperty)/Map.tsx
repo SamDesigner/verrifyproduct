@@ -8,7 +8,7 @@ import "@mapbox/mapbox-gl-draw/dist/mapbox-gl-draw.css";
 import Button from "../Button";
 import { usePropertyStore } from "@/store/usePropertyStore";
 import { useRouter } from "next/navigation";
-import { toastSuccess, toastError } from "@/lib/toast/toast";
+import { toastSuccess } from "@/lib/toast/toast";
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 
 export default function Map() {

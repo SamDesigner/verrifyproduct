@@ -1,10 +1,10 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import { useAuthStore } from "@/store/useAuthStore";
 import {
-  Property,
-  PropertyMeta,
   GetPropertiesResponse,
-  PropertyListResponse
+  PropertyListResponse,
+  propertyIdResponse
+
 } from "../types/property";
 
 export interface CreatePropertyPayload {
@@ -117,20 +117,51 @@ export async function getNearbyProperties(params: {
 
   return data.data.data; // Property[]
 }
-// export async function getPropertyById(
-//   propertyId: string
-// ): Promise<propertyIdResponse> {
-//   const { accessToken } = useAuthStore.getState();
-//   if (!accessToken) throw new Error("User not authenticated");
-//   const res = await fetch(`${BASE_URL}/property/${propertyId}`, {
-//     method: "PATCH",
-//     headers: {
-//       Authorization: `Bearer ${accessToken}`,
-//     },
-//   });
-//   const data = await res.json();
-//   if (!res.ok || !data.data) {
-//     throw new Error(data.message || "Failed to fetch property");
-//   }
-//   return data.data;
-// }
+export async function updateProperty(
+  propertyId: string
+): Promise<propertyIdResponse> {
+  const { accessToken } = useAuthStore.getState();
+  if (!accessToken) throw new Error("User not authenticated");
+  const res = await fetch(`${BASE_URL}/property/${propertyId}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  const data = await res.json();
+  if (!res.ok || !data.data) {
+    throw new Error(data.message || "Failed to fetch property");
+  }
+  return data.data;
+}
+
+export async function updatePropertyVerificationStatus(
+  propertyId: string,
+  propertyVerificationStatus: "VERIFIED" | "REJECTED",
+  verificationMessage?: string
+) {
+  const { accessToken } = useAuthStore.getState();
+  if (!accessToken) throw new Error("User not authenticated");
+
+  const res = await fetch(`${BASE_URL}/property/status/${propertyId}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      propertyVerificationStatus,
+      verificationMessage:
+      verificationMessage ?? "Verification Done",
+    }),
+  });
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    console.error("Backend error:", data);
+    throw new Error(data.message || "Failed to update property status");
+  }
+
+  return data.data ?? data;
+}

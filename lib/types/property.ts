@@ -11,7 +11,13 @@ export interface Property {
   propertyType: string;
   isSubProperty: boolean;
   users: unknown | null;
-  company: unknown | null;
+  company :{
+    companyId:string;
+    companyVerificationStatus:string;
+    name:string;
+    profileImage:string;
+    proofofAddressType:string;
+  };
 }
 
 export interface PropertyMeta {
