@@ -7,23 +7,38 @@ import { updateCompanyVerificationStatus } from "@/lib/api/companyProfileAdmin";
 
 import { ImNewTab } from "react-icons/im";
 import Image from "next/image";
-interface CompanyStructure {
+// interface CompanyStructure {
 
-    id: string;
+//     id: string;
 
-    name: string;
-    description: string;
-    verificationMessage: string;
-    phoneNumber: string;
-    companyVerificationStatus: string;
-    proofOfAddressType: string;
-    proofOfAddress: string;
-    profileImage: string;
-    address: string;
-    city: string;
-    state: string;
+//     name: string;
+//     description: string;
+//     verificationMessage: string;
+//     phoneNumber: string;
+//     companyVerificationStatus: string;
+//     proofOfAddressType: string;
+//     proofOfAddress: string;
+//     profileImage: string;
+//     address: string;
+//     city: string;
+//     state: string;
   
+// }
+interface CompanyStructure {
+  id: string;
+  name: string;
+  description: string;
+  verificationMessage: string;
+  phoneNumber: string;
+  companyVerificationStatus: string;
+  proofOfAddressType?: string; // optional
+  proofOfAddress?: string;     // optional
+  profileImage?: string;
+  address?: string;
+  city?: string;
+  state?: string;
 }
+
 const Page = () => {
   const { id } = useParams<{ id: string }>();
   const [company, setCompany] = useState<CompanyStructure | null>(null);
@@ -36,7 +51,8 @@ const Page = () => {
     const fetchCompany = async () => {
       try {
         const companyData = await getCompanyById(id);
-        setCompany(companyData);
+   setCompany(companyData);
+       
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load company");
       } finally {

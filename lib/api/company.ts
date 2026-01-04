@@ -35,7 +35,7 @@ export async function getCompany(): Promise<Company | null> {
 
 export async function getCompanyById(
   id: string
-): Promise<GetCompanyResponse | null> {
+): Promise<GetCompanyResponse["data"] | null> {
   const { accessToken } = useAuthStore.getState();
   const res = await fetch(`${BASE_URL}/company/get/${id}`, {
     method: "GET",
@@ -44,11 +44,13 @@ export async function getCompanyById(
       Authorization: `Bearer ${accessToken}`,
     },
   });
-  const data = await res.json();
-    if (!res.ok || !data.success) {
-    throw new Error(data.message || "Failed to fetch company");
+  const response: GetCompanyResponse = await res.json();
+
+  if (!res.ok || !response.success) {
+    throw new Error(response.message || "Failed to fetch company");
   }
-  return data.data;
+
+  return response.data;
 }
 
 export async function createCompany(payload: CreateCompanyPayload) {
