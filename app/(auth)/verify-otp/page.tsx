@@ -10,7 +10,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { User } from "@/lib/types/user";
 function VerifyOtpContent() {
   const searchParams = useSearchParams();
-  const email = searchParams?.get("email") ?? "";
+  const email = searchParams?.get("email") || "";
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -86,11 +86,13 @@ function VerifyOtpContent() {
   );
 }
 const Page = () => {
-  <Suspense
-    fallback={<div className="text-center text-gray-100">Loading...</div>}
-  >
-    <VerifyOtpContent />
-  </Suspense>;
+  return (
+    <Suspense
+      fallback={<div className="text-center text-gray-100">Loading...</div>}
+    >
+      <VerifyOtpContent />
+    </Suspense>
+  );
 };
 
 export default Page;
