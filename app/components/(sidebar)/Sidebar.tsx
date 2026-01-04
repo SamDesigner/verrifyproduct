@@ -1,9 +1,9 @@
 import Logo from "@/public/images/Logo.png";
 import Image from "next/image";
 import Link from "next/link";
-import { MdDashboard } from "react-icons/md";
+
 // import { HiOutlineFolderOpen } from "react-icons/hi2";
-import { IoSettingsOutline } from "react-icons/io5";
+
 import { MdOutlineMapsHomeWork } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { PiWarehouseBold } from "react-icons/pi";
