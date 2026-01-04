@@ -10,7 +10,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import {User} from '@/lib/types/user'
 const Page = () => {
   const searchParams = useSearchParams();
-  const email = searchParams.get("email") || "";
+  const email = searchParams?.get("email") ?? "";
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();

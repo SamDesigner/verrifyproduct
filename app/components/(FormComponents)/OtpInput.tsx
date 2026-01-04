@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import OTPInput from "react-otp-input";
-import Button from "@/app/components/(FormComponents)/Button";
+// import Button from "@/app/components/(FormComponents)/Button";
 interface OtpComponentProps {
   value: string;
   onChange: (otp: string) => void;
