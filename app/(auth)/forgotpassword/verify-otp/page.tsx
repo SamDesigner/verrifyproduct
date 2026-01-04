@@ -5,17 +5,17 @@ import { useState } from "react";
 import { toastSuccess, toastError } from "@/lib/toast/toast";
 import Link from "next/link";
 import Button from "@/app/components/(FormComponents)/Button";
-import { verifyForgotPassword} from "@/lib/api/auth";
+import { verifyForgotPassword } from "@/lib/api/auth";
+import { Suspense } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
-import {User} from '@/lib/types/user'
-
-const Page = () => {
+import { User } from "@/lib/types/user";
+const VerifyOtpContent = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const setAuth = useAuthStore((state) => state.setAuth)
+  const setAuth = useAuthStore((state) => state.setAuth);
   const handleVerify = async () => {
     if (!email) {
       toastError("Email not found. Please sign up again.");
@@ -30,20 +30,20 @@ const Page = () => {
     try {
       setLoading(true);
 
-      const data = await verifyForgotPassword({
+      const data = (await verifyForgotPassword({
         email,
         token: otp,
-      }) as {
-        accessToken:string,
-        refreshToken:string,
-        user:User
+      })) as {
+        accessToken: string;
+        refreshToken: string;
+        user: User;
       };
-      console.log('This is the response for the OTTP', data)
+      console.log("This is the response for the OTTP", data);
       setAuth({
-        accessToken:data.accessToken,
-        refreshToken:data.refreshToken,
-        user:data.user
-      })
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        user: data.user,
+      });
       toastSuccess("Account verified successfully 🎉");
 
       router.push("/reset-password");
@@ -72,8 +72,11 @@ const Page = () => {
       </div>
       <Otp onChange={setOtp} value={otp} />
       <div className="flex justify-end w-[450px]">
-        <div  className="w-[150px]">
-          <Button onClick={handleVerify} text={loading ? 'Sending' : 'Send Otp'} />
+        <div className="w-[150px]">
+          <Button
+            onClick={handleVerify}
+            text={loading ? "Sending" : "Send Otp"}
+          />
         </div>
       </div>
       <div className="flex gap-2 items-center justify-center">
@@ -83,6 +86,19 @@ const Page = () => {
         </Link>
       </div>
     </div>
+  );
+};
+const Page = () => {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex flex-col items-center justify-center min-h-screen">
+          <p>Loading...</p>
+        </div>
+      }
+    >
+      <VerifyOtpContent />
+    </Suspense>
   );
 };
 
