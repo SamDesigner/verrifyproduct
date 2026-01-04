@@ -53,17 +53,3 @@ export interface GetCompanyResponse {
 
 }
 // types/completeProfile.ts
-export interface CompleteProfileFormData {
-  firstName: string;
-  lastName: string;
-  username: string;
-  email: string;
-  address: string;
-  phoneNumber: string;
-  city: string;
-  state: string;
-
-  dob?: string | null;
-  profileImageUrl?: string | null;
-}
-
