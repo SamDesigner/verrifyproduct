@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import clippedImage from "@/public/images/clippedProperty.png";
 import { usePropertyStore } from "@/store/usePropertyStore";
 import Image from "next/image";
@@ -9,7 +9,6 @@ import Map from "@/app/components/(FormComponents)/(CreateProperty)/Map";
 import Button from "@/app/components/(FormComponents)/Button";
 const Properties = () => {
   const { submitPropertyDraft, loading } = usePropertyStore();
-
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const renderStep = () => {
     switch (step) {

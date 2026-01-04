@@ -1,4 +1,8 @@
-import { Company, CreateCompanyPayload } from "@/lib/types/company";
+import {
+  Company,
+  CreateCompanyPayload,
+  GetCompanyResponse,
+} from "@/lib/types/company";
 import { useAuthStore } from "@/store/useAuthStore";
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
@@ -17,7 +21,7 @@ export async function getCompany(): Promise<Company | null> {
   });
 
   if (res.status === 404) {
-    return null; 
+    return null;
   }
 
   const data = await res.json();
@@ -26,12 +30,28 @@ export async function getCompany(): Promise<Company | null> {
     throw new Error(data.message || "Failed to fetch company");
   }
 
-  return data.data
+  return data.data;
 }
 
-export async function createCompany(
-  payload: CreateCompanyPayload
-) {
+export async function getCompanyById(
+  id: string
+): Promise<GetCompanyResponse | null> {
+  const { accessToken } = useAuthStore.getState();
+  const res = await fetch(`${BASE_URL}/company/get/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  const data = await res.json();
+    if (!res.ok || !data.success) {
+    throw new Error(data.message || "Failed to fetch company");
+  }
+  return data.data;
+}
+
+export async function createCompany(payload: CreateCompanyPayload) {
   const { accessToken } = useAuthStore.getState();
 
   if (!accessToken) {
@@ -48,8 +68,8 @@ export async function createCompany(
   });
 
   const data = await res.json();
-  console.log('This is the response', res)
-  console.log('This is the data', data)
+  console.log("This is the response", res);
+  console.log("This is the data", data);
   if (!res.ok) {
     throw new Error(data.message || "Failed to create company profile");
   }

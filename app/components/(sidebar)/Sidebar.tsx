@@ -11,12 +11,12 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { usePathname } from "next/navigation";
 
 export const sidebarLinks = [
-  {
-    label: "Dashboard",
-    href: "/dashboard",
-    icon: MdDashboard,
-    roles: ["USER", "SUPER_ADMIN"],
-  },
+  // {
+  //   label: "Dashboard",
+  //   href: "/dashboard",
+  //   icon: MdDashboard,
+  //   roles: ["USER", "SUPER_ADMIN"],
+  // },
 
   {
     label: "Properties",
@@ -44,23 +44,23 @@ export const sidebarLinks = [
     roles: ["SUPER_ADMIN"],
   },
   {
-    label: "Company Management",
-    href: "/dashboard/admin/company-management",
+    label: "Map",
+    href: "/dashboard/admin/view-map",
     icon: PiWarehouseBold,
     roles: ["SUPER_ADMIN"],
   },
   {
     label: "Property Management",
-    href: "/s",
+    href: "/dashboard/admin/property-management",
     icon: PiWarehouseBold,
     roles: ["SUPER_ADMIN"],
   },
-  {
-    label: "Settings",
-    href: "/dashboard/settings",
-    icon: IoSettingsOutline,
-    roles: ["USER", "SUPER_ADMIN"],
-  },
+  // {
+  //   label: "Settings",
+  //   href: "/dashboard/settings",
+  //   icon: IoSettingsOutline,
+  //   roles: ["USER", "SUPER_ADMIN"],
+  // },
 ];
 
 export default function Sidebar({

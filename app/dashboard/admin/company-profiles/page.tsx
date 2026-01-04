@@ -2,20 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
-import Button from "@/app/components/(FormComponents)/Button"
-import {
-  getAllCompanies,
-  updateCompanyVerificationStatus,
-} from "@/lib/api/companyProfileAdmin";
+import Button from "@/app/components/(FormComponents)/Button";
+// import {
+//   getAllCompanies,
+//   updateCompanyVerificationStatus,
+// } from "@/lib/api/companyProfileAdmin";
+import { getAllCompanies } from "@/lib/api/companyProfileAdmin";
 import { CompanySummary } from "@/lib/types/companyProfileAdmin";
 import Image from "next/image";
-import { IoMdCheckmark } from "react-icons/io";
-import { FaXmark } from "react-icons/fa6";
+import { useRouter } from "next/navigation";
+// import { companySchema } from "@/lib/validation/companySchema";
 export default function CompaniesPage() {
   const [companies, setCompanies] = useState<CompanySummary[]>([]);
   const [loading, setLoading] = useState(true);
   const { accessToken } = useAuthStore();
-
+  const router = useRouter();
   useEffect(() => {
     const fetchCompanies = async () => {
       if (!accessToken) return;
@@ -34,25 +35,25 @@ export default function CompaniesPage() {
     fetchCompanies();
   }, [accessToken]);
 
-  const handleUpdateStatus = async (
-    companyId: string,
-    status: "VERIFIED" | "REJECTED"
-  ) => {
-    try {
-      await updateCompanyVerificationStatus(companyId, status);
+  // const handleUpdateStatus = async (
+  //   companyId: string,
+  //   status: "VERIFIED" | "REJECTED"
+  // ) => {
+  //   try {
+  //     await updateCompanyVerificationStatus(companyId, status);
 
-      setCompanies((prev) =>
-        prev.map((c) =>
-          c.companyId === companyId
-            ? { ...c, companyVerificationStatus: status }
-            : c
-        )
-      );
-    } catch (err) {
-      console.error(err);
-      alert("Failed to update company status");
-    }
-  };
+  //     setCompanies((prev) =>
+  //       prev.map((c) =>
+  //         c.companyId === companyId
+  //           ? { ...c, companyVerificationStatus: status }
+  //           : c
+  //       )
+  //     );
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Failed to update company status");
+  //   }
+  // };
 
   if (loading) return <p className="text-white">Loading companies...</p>;
   if (!companies.length)
@@ -96,7 +97,12 @@ export default function CompaniesPage() {
                 </p>
               </div>
               <div className="w-[200px]">
-                  <Button text="View Profile" /> 
+                <Button
+                  onClick={() =>
+                    router.push(`/dashboard/admin/company-profiles/${c.companyId}`)
+                  }
+                  text="View Profile"
+                />
               </div>
               <div
                 className="flex gap-2 items-center justify-between

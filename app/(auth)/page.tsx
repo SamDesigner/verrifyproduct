@@ -37,7 +37,7 @@ export default function LoginPage() {
       console.log("This is res", res);
       toastSuccess("Login successful 🎉");
       if (user.role === "USER") {
-        router.push("/dashboard");
+        router.push("/dashboard/profile");
       }else{
         router.push("/dashboard/admin")
       }
