@@ -7,7 +7,7 @@ import AvatarImage from "@/public/images/avatar.png";
 import VerifyUser from "@/public/images/verifyUser.png";
 import Link from "next/link";
 import Button from "@/app/components/(FormComponents)/Button";
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 export default function ProfileLayout({
   children,
@@ -16,15 +16,15 @@ export default function ProfileLayout({
 }) {
   const { user } = useAuthStore();
   const pathname = usePathname();
+  const router = useRouter();
+  const isPersonal = pathname === "/dashboard/profile/user-profile";
+  const isCompany = pathname === "/dashboard/profile/company-profile";
 
   if (!user) {
     return <p className="text-white text-center mt-10">Loading user data...</p>;
   }
 
   const profileSrc = user.profileImage || AvatarImage;
-
-  const isPersonal = pathname.includes("/profile/user-profile");
-  const isCompany = pathname.includes("/profile/company-profile");
 
   return (
     <div className="bg-gray-900 w-full p-5 flex flex-col gap-[50px]">
@@ -60,22 +60,17 @@ export default function ProfileLayout({
 
           {/* Tabs */}
           <div className="flex gap-10 w-[500px]">
-            <Link href="dashboard/profile/user-profile">
-              <Button text="Personal Profile" type={isPersonal ? "" : "bordered"} />
-              {/* <Button
-                text="Personal Profile"
-                type={isPersonal ? "primary" : "bordered"}
-              /> */}
-            </Link>
+            <Button
+              text="Personal Profile"
+              type={isPersonal ? "" : "bordered"}
+              onClick={() => router.push("/dashboard/profile/user-profile")}
+            />
 
-            <Link href="/dashboard/profile/company-profile">
-              <Button text="Company Profile" type={isCompany ? "" : "bordered"} />
-
-              {/* <Button
-                text="Company Profile"
-                type={isCompany ? "primary" : "bordered"}
-              /> */}
-            </Link>
+            <Button
+              text="Company Profile"
+              onClick={() => router.push("/dashboard/profile/company-profile")}
+              type={isCompany ? "" : "bordered"}
+            />
           </div>
         </div>
       </div>
