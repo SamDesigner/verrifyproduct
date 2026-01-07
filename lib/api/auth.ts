@@ -73,9 +73,14 @@ interface updatePasswordResponse {
   success: boolean;
   message: string;
   status: number;
-  description?:string
+  description?: string;
 }
-
+// interface logoutResponse {
+//   success: boolean;
+//   message: string;
+//   data: string;
+//   description: string;
+// }
 
 export async function registerUser(payload: RegisterPayload): Promise<unknown> {
   if (!BASE_URL) {
@@ -208,12 +213,12 @@ export async function resetPassword(payload: ResetPasswordPayload) {
   return data;
 }
 export async function updatePassword(payload: updatePasswordPayload) {
-    const { accessToken } = useAuthStore.getState();
+  const { accessToken } = useAuthStore.getState();
   const response = await fetch(`${BASE_URL}/user/updatePassword`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
+      Authorization: `Bearer ${accessToken}`,
     },
     body: JSON.stringify(payload),
   });
@@ -258,3 +263,45 @@ export async function forgotPassword(
 
   return data;
 }
+export async function logout() {
+  try {
+    const { refreshToken } = useAuthStore.getState();
+
+    if (!refreshToken) {
+      console.warn("No refresh token, skipping API logout");
+    } else {
+      const response = await fetch(`${BASE_URL}/auth/logout`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      if (!response.ok) {
+        console.warn("Logout API returned:", response.status);
+      }
+    }
+  } catch (err) {
+    console.warn("Logout request failed:", err);
+  } finally {
+    // Always clear local state
+    useAuthStore.getState().logout();
+  }
+}
+
+
+// export async function logout(): Promise<logoutResponse> {
+//   const { refreshToken } = useAuthStore.getState();
+//   const response = await fetch(`${BASE_URL}/auth/logout`, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify({ refreshToken }),
+//   });
+//   console.log("This is the response while logging out", response);
+//   console.log('This is the refresh token', refreshToken)
+//   const data: logoutResponse = await response.json();
+//   if (!response.ok || !data.success) {
+//     console.log("There is an error", response);
+//     throw new Error(data.message || "Logout failed");
+//   }
+//   return data;
+// }

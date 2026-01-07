@@ -5,7 +5,7 @@ import Image from "next/image";
 import CoverPhoto from "@/public/images/coverPhoto.png";
 import AvatarImage from "@/public/images/avatar.png";
 import VerifyUser from "@/public/images/verifyUser.png";
-import Link from "next/link";
+
 import Button from "@/app/components/(FormComponents)/Button";
 import { useRouter, usePathname } from "next/navigation";
 

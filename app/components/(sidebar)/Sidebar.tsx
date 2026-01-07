@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 // import { HiOutlineFolderOpen } from "react-icons/hi2";
-
+import { CiSettings } from "react-icons/ci";
 import { MdOutlineMapsHomeWork } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
 import { PiWarehouseBold } from "react-icons/pi";
@@ -55,12 +55,12 @@ export const sidebarLinks = [
     icon: PiWarehouseBold,
     roles: ["SUPER_ADMIN"],
   },
-  // {
-  //   label: "Settings",
-  //   href: "/dashboard/settings",
-  //   icon: IoSettingsOutline,
-  //   roles: ["USER", "SUPER_ADMIN"],
-  // },
+  {
+    label: "Settings",
+    href: "/dashboard/settings",
+    icon: CiSettings,
+    roles: ["USER", "SUPER_ADMIN"],
+  },
 ];
 
 export default function Sidebar({
