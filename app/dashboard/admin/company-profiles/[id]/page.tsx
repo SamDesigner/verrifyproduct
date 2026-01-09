@@ -7,6 +7,7 @@ import { updateCompanyVerificationStatus } from "@/lib/api/companyProfileAdmin";
 
 import { ImNewTab } from "react-icons/im";
 import Image from "next/image";
+import { toastSuccess, toastError } from "@/lib/toast/toast";
 // interface CompanyStructure {
 
 //     id: string;
@@ -22,7 +23,7 @@ import Image from "next/image";
 //     address: string;
 //     city: string;
 //     state: string;
-  
+
 // }
 interface CompanyStructure {
   id: string;
@@ -32,7 +33,7 @@ interface CompanyStructure {
   phoneNumber: string;
   companyVerificationStatus: string;
   proofOfAddressType?: string; // optional
-  proofOfAddress?: string;     // optional
+  proofOfAddress?: string; // optional
   profileImage?: string;
   address?: string;
   city?: string;
@@ -44,6 +45,7 @@ const Page = () => {
   const [company, setCompany] = useState<CompanyStructure | null>(null);
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [loader, setLoader] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => {
     if (!id) return;
@@ -51,8 +53,7 @@ const Page = () => {
     const fetchCompany = async () => {
       try {
         const companyData = await getCompanyById(id);
-   setCompany(companyData);
-       
+        setCompany(companyData);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load company");
       } finally {
@@ -66,8 +67,10 @@ const Page = () => {
     companyId: string,
     status: "VERIFIED" | "REJECTED"
   ) => {
+        setLoader(true);
+
     try {
-      await updateCompanyVerificationStatus(companyId, status);
+       await updateCompanyVerificationStatus(companyId, status);
 
       // setCompanies((prev) =>
       //   prev.map((c) =>
@@ -76,6 +79,7 @@ const Page = () => {
       //       : c
       //   )
       // );
+      toastSuccess('Company Profile Verified Successfully')
       setCompany((prev) =>
         prev && prev.id === companyId
           ? { ...prev, companyVerificationStatus: status }
@@ -83,7 +87,10 @@ const Page = () => {
       );
     } catch (err) {
       console.error(err);
-      alert("Failed to update company status");
+      toastError('Failed to update Company Status')
+      // alert("Failed to update company status");
+    } finally{
+      setLoader(false)
     }
   };
   if (loading) {
@@ -185,17 +192,17 @@ const Page = () => {
           <div className="flex gap-2">
             <div
               onClick={() => handleUpdateStatus(company.id, "VERIFIED")}
-              className="bg-green-600 text-white rounded-full p-2"
+              className="bg-green-600 cursor-pointer text-white rounded-full p-2"
             >
-              Accept
+              {loader ? 'Verifying...' : 'Verify Profile'}
             </div>
             {/* Decline User Company Profile */}
 
             <div
               onClick={() => handleUpdateStatus(company.id, "REJECTED")}
-              className="bg-red-600 text-white rounded-full p-2"
+              className="bg-red-600 cursor-pointer text-white rounded-full p-2"
             >
-              Decline
+               {loader ? 'Rejecting...' : 'Reject Profile'}
             </div>
           </div>
         </div>

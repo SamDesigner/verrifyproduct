@@ -1,10 +1,10 @@
 "use client";
 
 import { useAuthStore } from "@/store/useAuthStore";
-
+import  {useRouter} from 'next/navigation'
 export default function Page() {
   const { user } = useAuthStore();
-
+  const router = useRouter();
   if (!user) return null;
 
   const profileData = [
@@ -23,7 +23,7 @@ export default function Page() {
     <div className="bg_glass_glow w-full p-6 flex flex-col gap-[30px]">
       <div className="flex justify-between text-white">
         <h1 className="text-[25px] font-semibold">Personal Info</h1>
-        <button className="border border-gray-300 rounded-xl py-1 px-5">
+        <button  onClick={() => router.push('/update-profile')} className="border border-gray-300 rounded-xl py-1 px-5 cursor-pointer hover:bg-gray-100 hover:text-black transition duration-300 hover:translate-y-[-4px] hover:shadow-2x">
           Edit Profile
         </button>
       </div>

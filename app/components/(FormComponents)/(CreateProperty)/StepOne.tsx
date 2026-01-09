@@ -45,8 +45,8 @@ const StepOne = () => {
             className="glass-input"
           />
         </div>
-        <div className="flex gap-2">
-          <div className="flex flex-col gap-2">
+        <div className="flex gap-5">
+          <div className="flex flex-1 flex-col gap-2">
             <label className="text-white text-[18px]">City</label>
             <input
               placeholder="City"
@@ -55,7 +55,7 @@ const StepOne = () => {
               className="glass-input"
             />
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-1 flex-col gap-2">
             <label className="text-white text-[18px]">State</label>
             <input
               placeholder="State"

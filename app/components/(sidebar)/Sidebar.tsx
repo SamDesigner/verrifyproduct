@@ -6,7 +6,9 @@ import Link from "next/link";
 import { CiSettings } from "react-icons/ci";
 import { MdOutlineMapsHomeWork } from "react-icons/md";
 import { FaUser } from "react-icons/fa";
+import { TbBuildingSkyscraper } from "react-icons/tb";
 import { PiWarehouseBold } from "react-icons/pi";
+import { FaMapMarkedAlt } from "react-icons/fa";
 import { useAuthStore } from "@/store/useAuthStore";
 import { usePathname } from "next/navigation";
 
@@ -34,19 +36,19 @@ export const sidebarLinks = [
   {
     label: "Company Profiles",
     href: "/dashboard/admin/company-profiles",
-    icon: PiWarehouseBold,
+    icon: TbBuildingSkyscraper,
     roles: ["SUPER_ADMIN"],
   },
-  {
-    label: "User Management",
-    href: "/dashboard/admin/user-management",
-    icon: PiWarehouseBold,
-    roles: ["SUPER_ADMIN"],
-  },
+  // {
+  //   label: "User Management",
+  //   href: "/dashboard/admin/user-management",
+  //   icon: PiWarehouseBold,
+  //   roles: ["SUPER_ADMIN"],
+  // },
   {
     label: "Map",
     href: "/dashboard/admin/view-map",
-    icon: PiWarehouseBold,
+    icon: FaMapMarkedAlt,
     roles: ["SUPER_ADMIN"],
   },
   {

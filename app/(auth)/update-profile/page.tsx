@@ -69,7 +69,7 @@ export default function CompleteProfilePage() {
         profileImageUrl: data.profileImageUrl ?? undefined, 
       });
 
-      router.push("/dashboard");
+      router.push("/dashboard/profile");
     } catch (err) {
       toastError(err instanceof Error ? err.message : "Update failed");
     }

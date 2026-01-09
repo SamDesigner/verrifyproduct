@@ -54,7 +54,7 @@ export async function getCurrentUser(token: string): Promise<User> {
 export async function updateUser(payload: UpdateUserPayload) {
   const { accessToken } = useAuthStore.getState();
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/user/update`, {
+  const res = await fetch(`${BASE_URL}/user/update`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -64,7 +64,7 @@ export async function updateUser(payload: UpdateUserPayload) {
   });
 
   const data = await res.json();
-
+  console.log('This is the response from the API',data)
   if (!res.ok || !data.success) {
     throw new Error(data.message || "Failed to update profile");
   }
