@@ -9,6 +9,9 @@ import { verifyForgotPassword } from "@/lib/api/auth";
 import { Suspense } from "react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { User } from "@/lib/types/user";
+import Image from "next/image";
+import authLogo from "@/public/images/authLogo.png";
+
 const VerifyOtpContent = () => {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
@@ -59,6 +62,9 @@ const VerifyOtpContent = () => {
   };
   return (
     <div className="flex flex-col gap-10">
+      <div className="flex justify-center items-center ">
+        <Image src={authLogo} alt="Logo" />
+      </div>
       <div>
         <h2 className="text-xl text-gray-100 font-bold text-center text-[40px]">
           Check Your Email
@@ -70,8 +76,10 @@ const VerifyOtpContent = () => {
         </p>
         {/* <p className="text-white">Forgot Password</p> */}
       </div>
-      <Otp onChange={setOtp} value={otp} />
-      <div className="flex justify-end w-[450px]">
+      <div className="w-full">
+        <Otp onChange={setOtp} value={otp} />
+      </div>
+      <div className="flex justify-center w-full md:w-[450px]">
         <div className="w-[150px]">
           <Button
             onClick={handleVerify}

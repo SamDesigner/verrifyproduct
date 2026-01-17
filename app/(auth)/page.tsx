@@ -12,6 +12,8 @@ import type { InferType } from "yup";
 import { useForm } from "react-hook-form";
 import PasswordInput from "../components/(FormComponents)/PasswordInput";
 import Button from "../components/(FormComponents)/Button";
+import authLogo from '@/public/images/authLogo.png'
+import Image from "next/image";
 type LoginFormData = InferType<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
@@ -47,11 +49,14 @@ export default function LoginPage() {
   };
   return (
     <div className="flex flex-col gap-10">
-      <div className="flex flex-col items-center ">
-        <h2 className="text-xl text-gray-100 font-bold  text-[40px]">
-          Welcome Back To <span>Verrify</span>
+      <div className='flex justify-center items-center '>
+        <Image src={authLogo} alt='Logo' />
+      </div>
+      <div className="flex flex-col items-center gap-5 ">
+        <h2 className="text-xl text-gray-100 font-bold  text-[40px] text-center">
+          Welcome Back To <span className="text-purple-300">Verrify</span>
         </h2>
-        <p className="text-gray-100">
+        <p className="text-gray-100 text-center">
           Login in to continue exploring verified land and home.
         </p>
       </div>
@@ -83,7 +88,7 @@ export default function LoginPage() {
       </form>
       <div className="flex justify-center gap-2 pt-3 ">
         <p className="text-gray-200">Don&apos;t have an account?</p>
-        <Link className="font-semibold text-white" href="/signup">
+        <Link className="font-semibold text-white underline" href="/signup">
           Sign up
         </Link>
       </div>

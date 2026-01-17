@@ -9,12 +9,14 @@ import Button from "@/app/components/(FormComponents)/Button";
 import Link from "next/link";
 import { toastSuccess, toastError } from "@/lib/toast/toast";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import authLogo from "@/public/images/authLogo.png";
+
 type ResetPasswordForm = {
   email: string;
   password: string;
   confirmPassword: string;
 };
-
 
 const Page = () => {
   const router = useRouter();
@@ -39,6 +41,9 @@ const Page = () => {
 
   return (
     <div className="flex flex-col gap-5">
+      <div className="flex justify-center items-center ">
+        <Image src={authLogo} alt="Logo" />
+      </div>
       <div>
         <h2 className="text-xl text-gray-100 font-bold  text-center text-[40px]">
           Reset Password
@@ -46,8 +51,8 @@ const Page = () => {
         <p className="text-gray-100 text-center">Set up a new password</p>
       </div>
       <form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex flex-col gap-2 flex-1">
-          <label className="text-gray-200">First name</label>
+        <div className="flex flex-col gap-5 flex-1">
+          <label className="text-gray-200">Email</label>
           <div className="glass-input flex gap-2">
             <IoMailOutline className="text-white" size={20} />
             <input
@@ -56,23 +61,29 @@ const Page = () => {
               {...register("email")}
             />
           </div>
-          <p>{errors.email?.message}</p>
+          {
+          errors?.email?.message &&  <p >{errors.email?.message}</p>
+           
+          }
         </div>
-        <div className="flex flex-col gap-2 flex-1">
+        <div className="flex flex-col gap-5 flex-1">
           <label className="text-gray-200">Password</label>
           <PasswordInput register={register("password")} />
         </div>
-        <div className="flex flex-col gap-2 flex-1">
+        <div className="flex flex-col gap-5 flex-1">
           <label className="text-gray-200">Confirm Password</label>
           <PasswordInput register={register("confirmPassword")} />
         </div>
         <div>
-          <Button disabled={isSubmitting} text={isSubmitting ? 'Resetting....' : 'Reset Password'} />
+          <Button
+            disabled={isSubmitting}
+            text={isSubmitting ? "Resetting...." : "Reset Password"}
+          />
         </div>
       </form>
       <div className="flex justify-center items-center  mt-5 gap-2 text-gray-300">
         <span>Don&apos;t have an account?</span>
-        <Link className="text-gray-100 font-semibold" href="/signup">
+        <Link className="text-gray-100 font-semibold underline" href="/signup">
           Sign up
         </Link>
       </div>

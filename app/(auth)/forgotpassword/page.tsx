@@ -4,6 +4,8 @@ import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import authLogo from "@/public/images/authLogo.png";
 import {
   forgotPasswordSchema,
   ForgotPasswordForm,
@@ -21,7 +23,9 @@ const Page = () => {
   const onSubmit = async (data: ForgotPasswordForm) => {
     try {
       await forgotPassword(data.email);
-      router.push(`/forgotpassword/verify-otp?email=${encodeURIComponent(data.email)}`);
+      router.push(
+        `/forgotpassword/verify-otp?email=${encodeURIComponent(data.email)}`
+      );
     } catch (error) {
       console.error(
         "There was an error while trying to reset password:",
@@ -32,7 +36,11 @@ const Page = () => {
 
   return (
     <div>
-      <div>
+      <div className="flex flex-col gap-5">
+        <div className="flex  justify-center items-center ">
+          <Image src={authLogo} alt="Logo" />
+        </div>
+
         <h2 className="text-xl text-gray-100 font-bold  text-center text-[40px]">
           Forgot Password
         </h2>
@@ -41,11 +49,11 @@ const Page = () => {
         </p>
       </div>
       <div className="mt-[10vh] flex flex-col gap-5">
-        <h3 className="text-[23px] font-semibold text-gray-100">
+        {/* <h3 className="text-[23px] font-semibold text-gray-100">
           Enter Email Address
-        </h3>
+        </h3> */}
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3">
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-2">
             <label className="text-gray-300">Email Address</label>
             <input
               {...register("email")}
@@ -57,14 +65,17 @@ const Page = () => {
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
           </div>
-          <Button
-            disabled={isSubmitting}
-            text={isSubmitting ? "Sending..." : "Reset Password"}
-          />
+          <div className="mt-5">
+            <Button
+              disabled={isSubmitting}
+              text={isSubmitting ? "Sending..." : "Reset Password"}
+            />
+          </div>
+
           <div className="flex items-center justify-center gap-2 text-gray-300">
             <p>Don&apos;t have an account?</p>
             <Link href="/signup" className="underline font-semibold">
-              Sign up
+              Sign up 
             </Link>
           </div>
         </form>

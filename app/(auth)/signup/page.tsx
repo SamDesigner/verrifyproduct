@@ -10,6 +10,9 @@ import PasswordInput from "@/app/components/(FormComponents)/PasswordInput";
 import Button from "@/app/components/(FormComponents)/Button";
 import Link from "next/link";
 import { signupSchema } from "@/lib/validation/signupSchema";
+import Image from "next/image";
+import authLogo from "@/public/images/authLogo.png";
+
 type SignupFormData = InferType<typeof signupSchema>;
 const Page = () => {
   const router = useRouter();
@@ -26,7 +29,6 @@ const Page = () => {
     try {
       await registerUser(data);
       router.push(`/verify-otp?email=${encodeURIComponent(data.email)}`);
-
     } catch (error) {
       if (error instanceof Error) {
         alert(error.message);
@@ -35,10 +37,11 @@ const Page = () => {
   };
 
   return (
-    <div>
+    <div className="">
       <div className="flex flex-col items-center ">
         <div className="flex flex-col gap-5">
-          <h2 className="text-xl text-gray-100 font-bold  text-center text-[40px]">
+       
+          <h2 className="text-xl text-gray-100 font-bold  text-center text-[30px] md:text-[40px]">
             Join <span className="text-purple-300">Verrify</span> where trust
             meets opportunity
           </h2>
@@ -53,7 +56,7 @@ const Page = () => {
             className="flex flex-col gap-5"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="flex gap-10 ">
+            <div className="flex flex-col md:flex-row gap-5 md:gap-10 ">
               <div className="flex flex-col gap-2 flex-1">
                 <label className="text-gray-200">First name</label>
                 <div className="glass-input flex gap-2">
@@ -83,7 +86,7 @@ const Page = () => {
                 </p>
               </div>
             </div>
-            <div className="flex gap-10 ">
+            <div className="flex flex-col md:flex-row gap-5 md:gap-10 ">
               <div className="flex flex-col gap-2 flex-1">
                 <label className="text-gray-200">Email</label>
                 <div className="glass-input flex gap-2">
@@ -104,7 +107,7 @@ const Page = () => {
                 </p>
               </div>
             </div>
-            <div className="flex gap-10 ">
+            <div className="flex flex-col md:flex-row gap-5 md:gap-10 ">
               <div className="flex flex-col gap-2 flex-1">
                 <label className="text-gray-200">Confirm Password</label>
                 <PasswordInput register={register("confirmPassword")} />
@@ -133,7 +136,7 @@ const Page = () => {
                 className="glass-checkbox "
                 {...register("isAgreed")}
               />
-              <label className="text-gray-100">
+              <label className="text-gray-100 text-[13px]">
                 I agree to Verrify’s Terms of Service and Privacy Policy.
               </label>
             </div>
@@ -147,7 +150,7 @@ const Page = () => {
           </form>
           <div className="flex justify-center gap-2 pt-3 ">
             <p className="text-gray-200">Already have an account?</p>
-            <Link className="font-semibold text-white" href="/">
+            <Link className="font-semibold text-white underline" href="/">
               Log in
             </Link>
           </div>

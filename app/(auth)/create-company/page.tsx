@@ -8,6 +8,8 @@ import Button from "@/app/components/(FormComponents)/Button";
 import { useCompanyStore } from "@/store/useCompanyStore";
 import { useState } from "react";
 import { ValidationError } from "yup";
+import Image from "next/image";
+import authLogo from "@/public/images/authLogo.png";
 import { createCompanySchema } from "@/lib/validation/companySchema";
 export default function CreateCompanyPage() {
   const router = useRouter();
@@ -54,10 +56,15 @@ export default function CreateCompanyPage() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-6  rounded-lg bg-glass-glow">
-      <h2 className="text-2xl font-bold text-white text-center mb-6">
-        Create Company Profile
-      </h2>
+    <div className="max-w-2xl mx-auto md:mt-10 md:p-6  rounded-lg bg-glass-glow">
+      <div className="flex flex-col gap-2">
+        <div className="flex justify-center items-center ">
+          <Image src={authLogo} alt="Logo" />
+        </div>
+        <h2 className="text-2xl font-bold text-white text-center mb-6">
+          Create Company Profile
+        </h2>
+      </div>
 
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col gap-2 ">
@@ -84,7 +91,7 @@ export default function CreateCompanyPage() {
             <span className="text-red-400 text-sm">{errors.description}</span>
           )}
         </div>
-        <div className="flex gap-5">
+        <div className="flex flex-col md:flex-row gap-5">
           <div className="flex flex-col gap-2 flex-1 ">
             <label className="text-gray-200">Phone Number</label>
             <input
@@ -122,7 +129,7 @@ export default function CreateCompanyPage() {
             )}
           </div>
         </div>
-        <div className="flex gap-5">
+        <div className="flex gap-5 flex-col md:flex-row">
           <div className="flex-1">
             <FileUpload
               fileType="COMPANY_PROFILE_PICTURE"
@@ -184,9 +191,7 @@ export default function CreateCompanyPage() {
               className="glass-input"
             />
             {errors.name && (
-              <span className="text-red-400 text-sm">
-                {errors.state}
-              </span>
+              <span className="text-red-400 text-sm">{errors.state}</span>
             )}
           </div>
         </div>
