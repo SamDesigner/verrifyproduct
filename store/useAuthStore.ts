@@ -103,7 +103,7 @@ export async function initializeUser() {
   if (!hasHydrated || !accessToken) return;
 
   try {
-    const user = await getCurrentUser(accessToken);
+    const user = await getCurrentUser();
     useAuthStore.setState({ user });
   } catch {
     useAuthStore.getState().logout();
