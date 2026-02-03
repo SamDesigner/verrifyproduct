@@ -6,9 +6,9 @@ export interface Company {
   name: string;
   description: string;
   verificationMessage: string;
-  phoneNumber?:string;
+  phoneNumber?: string;
   companyVerificationStatus: string;
-  proofOfAddressType?:string;
+  proofOfAddressType?: string;
   proofOfAddress?: string;
   profileImage?: string;
   address?: string;
@@ -26,8 +26,7 @@ export interface CreateCompanyPayload {
   address: string;
   city: string;
   state: string;
-  isSubmitted:boolean
-
+  isSubmitted: boolean;
 }
 export interface GetCompanyResponse {
   success: string;
@@ -48,8 +47,44 @@ export interface GetCompanyResponse {
     address: string;
     city: string;
     state: string;
-  },
-  description: string
-
+  };
+  description: string;
 }
 // types/completeProfile.ts
+
+export interface UpdateCompanyPayload {
+  name: string;
+  description: string;
+  phoneNumber: string;
+  proofOfAddressType: string;
+  proofOfAddress: string;
+  profileImage: string;
+  address: string;
+  city: string;
+  state: string;
+  isSubmitted: boolean;
+}
+
+export interface UpdateCompanyResponse {
+  success: string;
+  message: string;
+  data: {
+    id: string;
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+    name: string;
+    description: string;
+    verificationMessage: string;
+    phoneNumber: string;
+    companyVerificationStatus: string;
+    proofOfAddressType:string;
+    proofOfAddress: string;
+    profileImage: string;
+    address: string;
+    city: string;
+    state: string;
+  };
+  description: string;
+
+}

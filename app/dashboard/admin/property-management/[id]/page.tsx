@@ -1,43 +1,36 @@
 "use client";
-// import { getPropertyById } from "@/lib/api/property";
-// import { useParams } from "next/navigation";
-// import { useEffect, useState } from "react";
-
+import { getPropertyById } from "@/lib/api/property";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+// import { Property } from "@/lib/types/property";
+import { SinglePropertyResponse } from "@/lib/types/property";
 const Page = () => {
-//   const { id } = useParams<{ id: string }>();
-//   const [property, setProperty] = useState(null);
-//   const [loading, setLoading] = useState<boolean>(true);
-//   const [error, setError] = useState<string | null>(null);
+  const [property, setProperty] = useState<SinglePropertyResponse | null>(null);
+  const params = useParams();
+  const [loading, setLoading] = useState<boolean>(true);
+  const id = params.id as string;
+  useEffect(() => {
+    if (!id) return;
+    const fetchProperty = async () => {
+      try {
+        const response = await getPropertyById(id);
+        console.log('This is the data',response)
+        setProperty(response);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-//   useEffect(() => {
-//     if (!id) return;
-//     const fetchProperty = async () => {
-//       try {
-//         const propertyData = await getPropertyById(id);
-//         setProperty(propertyData);
-//       } catch (err) {
-//         setError(
-//           err instanceof Error ? err.message : "Failed to load property"
-//         );
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchProperty();
-//   }, [id]);
-//   if (loading) {
-//     return <p className="text-white">Loading company...</p>;
-//   }
-//   if (error) {
-//     return <p className="text-red-500">{error}</p>;
-//   }
-//   if (!property) {
-//     return <p className="text-gray-400">Property not found</p>;
-//   }
+    fetchProperty();
+  }, [id])
+  if (loading) return <p>Loading...</p>;
+  if (!property) return <p>Property not found</p>;
   return (
     <div className="bg-gray-900">
       <div>
-        {/* <h1>{property.name} Property Detail</h1> */}
+        <h1>{property.name} Property Detail</h1>
       </div>
     </div>
   );

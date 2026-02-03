@@ -9,6 +9,7 @@ import {
   getNearbyProperties,
 } from "@/lib/api/property";
 import type { Property } from "@/lib/types/property";
+import { getPropertiesByLocation } from "@/lib/api/property";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN!;
 console.log("Mapbox token:", process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
@@ -16,8 +17,36 @@ console.log("Mapbox token:", process.env.NEXT_PUBLIC_MAPBOX_TOKEN);
 export default function PropertyMap() {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-
+  const [searchMode, setSearchMode] = useState<"viewport" | "location">("viewport");
+  const [locationQuery, setLocationQuery] = useState("");
   const [properties, setProperties] = useState<Property[]>([]);
+
+
+  /* =======================
+   Search On Map By Location
+======================== */
+  const searchByLocation = async (locationName: string) => {
+    if (!mapRef.current) return;
+
+    try {
+      setSearchMode("location");
+
+      const response = await getPropertiesByLocation({
+        locationName,
+        limit: 50,
+      });
+
+      // const data = response.data;
+      const data: Property[] = Array.isArray(response.data?.data)
+        ? response.data.data
+        : [];
+      console.log('This is the data from location search', data)
+      setProperties(data);
+      drawPolygons(mapRef.current, data);
+    } catch (err) {
+      console.error("Location search failed", err);
+    }
+  };
 
   /* =======================
      Draw Polygons
@@ -113,17 +142,18 @@ export default function PropertyMap() {
      Fetch Viewport Properties
   ======================== */
   const fetchViewportProperties = async (map: mapboxgl.Map) => {
+    if (searchMode === "location") return;
     if (!map.isStyleLoaded()) return;
 
     try {
       const bounds = map.getBounds();
-if (!bounds) return;
+      if (!bounds) return;
       const data = await getPropertiesByViewport({
         north: bounds.getNorth() ?? 0,
         south: bounds.getSouth() ?? 0,
-        east: bounds.getEast() ?? 0 ,
+        east: bounds.getEast() ?? 0,
         west: bounds.getWest() ?? 0,
-        zoom: map.getZoom() ,
+        zoom: map.getZoom(),
       });
       console.log("The data from endpoint", data);
       setProperties(data);
@@ -178,7 +208,7 @@ if (!bounds) return;
       map.remove();
       mapRef.current = null;
     };
-  }, []);
+  });
 
   /* =======================
      Render
@@ -192,7 +222,21 @@ if (!bounds) return;
           Properties loaded: {properties.length}
         </div>
       </div>
-      {/* Optional debug info */}
+      <div className="absolute top-4 left-4  bg-black/70 p-3 rounded flex gap-2 z-2000">
+        <input
+          type="text"
+          placeholder="Search by location (e.g. GRA, Lekki)"
+          value={locationQuery}
+          onChange={(e) => setLocationQuery(e.target.value)}
+          className="px-3 py-2 text-black rounded w-64"
+        />
+        <button
+          onClick={() => searchByLocation(locationQuery)}
+          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+        >
+          Search
+        </button>
+      </div>
     </div>
   );
 }

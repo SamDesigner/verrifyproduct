@@ -4,8 +4,8 @@ import { usePropertyStore } from "@/store/usePropertyStore";
 const StepOne = () => {
   const { propertyDraft, updateDraftField } = usePropertyStore();
   return (
-    <div>
-      <div className="flex flex-col gap-4">
+    <div className="h-full">
+      <div className="flex flex-col gap-4 h-full">
         <div className="flex flex-col gap-2">
           <label className="text-white text-[18px]">Property Name</label>
           <input

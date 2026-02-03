@@ -2,6 +2,7 @@ import {
   Company,
   CreateCompanyPayload,
   GetCompanyResponse,
+  UpdateCompanyPayload,
 } from "@/lib/types/company";
 import { useAuthStore } from "@/store/useAuthStore";
 
@@ -34,7 +35,7 @@ export async function getCompany(): Promise<Company | null> {
 }
 
 export async function getCompanyById(
-  id: string
+  id: string,
 ): Promise<GetCompanyResponse["data"] | null> {
   const { accessToken } = useAuthStore.getState();
   const res = await fetch(`${BASE_URL}/company/get/${id}`, {
@@ -77,4 +78,28 @@ export async function createCompany(payload: CreateCompanyPayload) {
   }
 
   return data;
+}
+
+export async function updateCompany(
+  companyId: string,
+  payload: UpdateCompanyPayload,
+) {
+  const { accessToken } = useAuthStore.getState();
+  if (!accessToken) {
+    throw new Error("User not authenticated");
+  }
+  const res = await fetch(`${BASE_URL}/company/update/${companyId}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await res.json();
+  console.log("This is the response", res);
+  console.log("This is the data", data);
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to create company profile");
+  }
 }

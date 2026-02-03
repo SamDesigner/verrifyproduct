@@ -3,8 +3,7 @@ import { useAuthStore } from "@/store/useAuthStore";
 import {
   GetPropertiesResponse,
   PropertyListResponse,
-  propertyIdResponse
-
+  propertyIdResponse,
 } from "../types/property";
 
 export interface CreatePropertyPayload {
@@ -68,7 +67,7 @@ export async function getPropertiesByViewport(params: {
   west: number;
   zoom?: number;
 }) {
-   const { accessToken } = useAuthStore.getState();
+  const { accessToken } = useAuthStore.getState();
   const query = new URLSearchParams({
     north: params.north.toString(),
     south: params.south.toString(),
@@ -76,11 +75,12 @@ export async function getPropertiesByViewport(params: {
     west: params.west.toString(),
     ...(params.zoom && { zoom: params.zoom.toString() }),
   });
-  const res = await fetch(`${BASE_URL}/property/viewport?${query}`,{
+  const res = await fetch(`${BASE_URL}/property/viewport?${query}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
-    }});
+    },
+  });
 
   const data: PropertyListResponse = await res.json();
 
@@ -96,18 +96,19 @@ export async function getNearbyProperties(params: {
   longitude: number;
   radiusKm: number;
 }) {
-     const { accessToken } = useAuthStore.getState();
+  const { accessToken } = useAuthStore.getState();
   const query = new URLSearchParams({
     latitude: params.latitude.toString(),
     longitude: params.longitude.toString(),
     radiusKm: params.radiusKm.toString(),
   });
 
-  const res = await fetch(`${BASE_URL}/property/point?${query}`,{
+  const res = await fetch(`${BASE_URL}/property/point?${query}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
-    }})
+    },
+  });
 
   const data: PropertyListResponse = await res.json();
 
@@ -117,8 +118,41 @@ export async function getNearbyProperties(params: {
 
   return data.data.data; // Property[]
 }
+
+export async function getPropertiesByLocation(params:{
+  locationName:string;
+  limit?:number;
+  page?:number;
+  propertyType?:string;
+  status?:string
+}) {
+  const { accessToken } = useAuthStore.getState();
+  if (!accessToken) throw new Error("User not authenticated");
+    const query = new URLSearchParams();
+  if (params.limit) query.append("limit", params.limit.toString());
+  if (params.page) query.append("page", params.page.toString());
+  if (params.propertyType) query.append("propertyType", params.propertyType);
+  if (params.status) query.append("status", params.status);
+
+    const res = await fetch(
+    `${BASE_URL}/property/location/${params.locationName}?${query.toString()}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    }
+  );
+  if (!res.ok) {
+    throw new Error("Failed to fetch properties by location");
+  }
+
+  return res.json();
+}
+
 export async function updateProperty(
-  propertyId: string
+  propertyId: string,
 ): Promise<propertyIdResponse> {
   const { accessToken } = useAuthStore.getState();
   if (!accessToken) throw new Error("User not authenticated");
@@ -138,7 +172,7 @@ export async function updateProperty(
 export async function updatePropertyVerificationStatus(
   propertyId: string,
   propertyVerificationStatus: "VERIFIED" | "REJECTED",
-  verificationMessage?: string
+  verificationMessage?: string,
 ) {
   const { accessToken } = useAuthStore.getState();
   if (!accessToken) throw new Error("User not authenticated");
@@ -151,8 +185,7 @@ export async function updatePropertyVerificationStatus(
     },
     body: JSON.stringify({
       propertyVerificationStatus,
-      verificationMessage:
-      verificationMessage ?? "Verification Done",
+      verificationMessage: verificationMessage ?? "Verification Done",
     }),
   });
 
@@ -164,4 +197,21 @@ export async function updatePropertyVerificationStatus(
   }
 
   return data.data ?? data;
+}
+
+export async function getPropertyById(propertyId: string) {
+    const { accessToken } = useAuthStore.getState();
+  if (!accessToken) throw new Error("User not authenticated");
+  const res = await fetch(`${BASE_URL}/property/${propertyId}`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+       Authorization: `Bearer ${accessToken}`,
+    },
+  });
+  if(!res.ok) {
+    throw new Error("Failed to fetch property by ID");
+  }
+
+  return res.json();
 }

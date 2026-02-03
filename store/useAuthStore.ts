@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { getCurrentUser } from "@/lib/api/user";
 import { refreshAccessToken } from "@/lib/api/auth";
+// import { getCurrentUser } from "@/lib/api/user";
 export interface User {
   id: string;
   firstName: string;
@@ -19,6 +20,7 @@ export interface User {
   is2fa: boolean;
   isVerified: boolean;
   isGoogleLogin: boolean;
+  hasCompanyProfile: boolean;
   isEnabled: boolean;
 }
 
@@ -33,14 +35,14 @@ interface AuthState {
     refreshToken: string | null;
     user: User | null;
   }) => void;
-
+  refreshUser: () => Promise<User | null>;
   logout: () => void;
   refreshTokens: () => Promise<void>;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set,get) => ({
+    (set, get) => ({
       accessToken: null,
       refreshToken: null,
       user: null,
@@ -55,7 +57,7 @@ export const useAuthStore = create<AuthState>()(
           accessToken: null,
           refreshToken: null,
           user: null,
-        });                                         
+        });
       },
       refreshTokens: async () => {
         const { refreshToken, user } = get();
@@ -71,14 +73,28 @@ export const useAuthStore = create<AuthState>()(
           user,
         });
       },
+      refreshUser: async () => {
+        const { accessToken } = get();
+        if (!accessToken) return null;
+
+        try {
+          const user = await getCurrentUser();
+          set({ user });
+          console.log('Refreshed triggered and this is the user', user)
+          return user;
+        } catch (error) {
+          console.error("Failed to refresh user", error);
+          return null;
+        }
+      },
     }),
     {
       name: "auth",
       onRehydrateStorage: () => () => {
-        useAuthStore.setState({ hasHydrated: true }); 
+        useAuthStore.setState({ hasHydrated: true });
       },
-    }
-  )
+    },
+  ),
 );
 
 export async function initializeUser() {

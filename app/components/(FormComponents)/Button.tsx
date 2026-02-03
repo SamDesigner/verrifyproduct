@@ -27,7 +27,7 @@ const Button = ({ text, type, disabled, onClick }: ButtonProps) => {
         <button
           onClick={onClick}
           disabled={disabled}
-          className="glass-glow-btn  text-white rounded-md py-2 px-5! mt-2"
+          className="glass-glow-btn  text-white rounded-md py-2 md:px-5! mt-2"
         >
           {text}
         </button>

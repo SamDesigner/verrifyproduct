@@ -11,8 +11,10 @@ import { ValidationError } from "yup";
 import Image from "next/image";
 import authLogo from "@/public/images/authLogo.png";
 import { createCompanySchema } from "@/lib/validation/companySchema";
+import { useAuthStore } from "@/store/useAuthStore";
 export default function CreateCompanyPage() {
   const router = useRouter();
+  const {refreshUser} = useAuthStore();
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { companyDraft, updateDraftField, submitCompanyDraft } =
@@ -27,7 +29,9 @@ export default function CreateCompanyPage() {
       });
 
       await submitCompanyDraft();
+      await refreshUser();
       toastSuccess("Company Profile created successfully");
+      
       router.push("/dashboard");
     } catch (err) {
       if (err instanceof ValidationError) {

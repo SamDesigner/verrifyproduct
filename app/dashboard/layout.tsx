@@ -1,10 +1,12 @@
 "use client";
-
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "../components/(sidebar)/Sidebar";
 import { initializeUser, useAuthStore } from "@/store/useAuthStore";
-
+import { FaBarsStaggered } from "react-icons/fa6";
+// import { usePathname } from 'next/navigation'
+import authLogo from '@/public/images/authLogo.png'
 export default function DashboardLayout({
   children,
 }: {
@@ -12,9 +14,16 @@ export default function DashboardLayout({
 }) {
   const [open, setOpen] = useState(false);
   const router = useRouter();
-
+  // const pathname = usePathname()
   const { accessToken, user, hasHydrated } = useAuthStore();
-
+  // const titleMap: Record<string, string> = {
+  //   "/dashboard/profile/user-profile": "Personal Profile",
+  //   "/dashboard/profile/company-profile": "Company Profile",
+  //   "/dashboard/admin/property-management": "Property Management",
+  //   "/profile": "Profile",
+  //   "/dashboard": "Dashboard",
+  // };
+  // const title = titleMap[pathname] ?? "Page";
   useEffect(() => {
     if (!hasHydrated) return;
 
@@ -54,13 +63,24 @@ export default function DashboardLayout({
 
       <Sidebar open={open} setOpen={setOpen} />
 
-      <main className="flex-1 overflow-auto p-6 bg-gray-800">
-        <button
-          className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded"
-          onClick={() => setOpen(true)}
-        >
-          Open Menu
-        </button>
+      <main className="flex-1 overflow-auto p-2 md:p-6 bg-gray-800">
+        <div className="flex md:hidden justify-between px-2">
+          <div>
+            <Image alt="Logo" src={authLogo} />
+          </div>
+          <button
+            className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded "
+            onClick={() => setOpen(true)}
+          >
+            <FaBarsStaggered size={22} />
+          </button>
+        </div>
+
+        {/* <div className="py-6 text-center md:text-left">
+          <h1 className="text-2xl font-bold text-white">{title}</h1>
+
+        </div> */}
+
         {children}
       </main>
     </div>

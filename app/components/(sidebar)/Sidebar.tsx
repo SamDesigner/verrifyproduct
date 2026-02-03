@@ -11,7 +11,7 @@ import { PiWarehouseBold } from "react-icons/pi";
 import { FaMapMarkedAlt } from "react-icons/fa";
 import { useAuthStore } from "@/store/useAuthStore";
 import { usePathname } from "next/navigation";
-
+import { MdOutlineClose } from "react-icons/md";
 export const sidebarLinks = [
   // {
   //   label: "Dashboard",
@@ -84,28 +84,33 @@ export default function Sidebar({
         transition-transform duration-300 lg:hidden`}
       >
         <button
-          className="mb-6 p-2 bg-gray-700 rounded"
+          className="mb-6 p-2"
           onClick={() => setOpen(false)}
         >
-          Close
+          <MdOutlineClose size={22} />
         </button>
 
         <nav className="flex flex-col gap-3">
-          <Link href="/dashboard" className="hover:bg-gray-700 p-2 rounded">
-            Home
-          </Link>
-          <a
-            href="/dashboard/profile"
-            className="hover:bg-gray-700 p-2 rounded"
-          >
-            Profile
-          </a>
-          <a
-            href="/dashboard/settings"
-            className="hover:bg-gray-700 p-2 rounded"
-          >
-            Settings
-          </a>
+          {sidebarLinks
+            .filter((link) => link.roles.includes(user.role))
+            .map((link) => {
+              const Icon = link.icon;
+              const isActive = pathname.startsWith(link.href);
+
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setOpen(false)}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-md transition
+                  ${isActive ? "bg-blue-600 text-white" : "hover:bg-gray-800"}
+                `}
+                >
+                  <Icon size={18} />
+                  {link.label}
+                </Link>
+              );
+            })}
         </nav>
       </aside>
 

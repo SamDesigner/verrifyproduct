@@ -56,7 +56,7 @@ const Page = () => {
   };
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 bg-gray-900 p-3 rounded-2xl">
       <div className="border-b pb-5 border-gray-600">
         <h2 className="text-[40px] font-bold text-white ">Profile Settings</h2>
       </div>
@@ -64,7 +64,7 @@ const Page = () => {
         <div className="flex flex-col gap-5">
           {settingsData.map((setting) => (
             <div
-              className="bg_glass_glow flex flex-col gap-2 "
+              className="bg_glass_glow p-6 flex flex-col gap-2 "
               key={setting.id}
             >
               <div className="gap-2">

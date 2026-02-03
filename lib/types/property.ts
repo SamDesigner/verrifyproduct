@@ -11,13 +11,35 @@ export interface Property {
   propertyType: string;
   isSubProperty: boolean;
   users: unknown | null;
-  company :{
-    companyId:string;
-    companyVerificationStatus:string;
-    name:string;
-    profileImage:string;
-    proofofAddressType:string;
+  company: {
+    companyId: string;
+    companyVerificationStatus: string;
+    name: string;
+    profileImage: string;
+    proofofAddressType: string;
   };
+}
+
+export interface SinglePropertyResponse {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
+  name: string; 
+  description: string;
+  propertyVerificationStatus: string;
+  area: number;
+  polygon:  GeoJSON.Polygon;
+  address: string;
+  city: string;
+  state: string;
+  propertyType: string;
+  certificationOfOccupancy: Record<string, unknown>;
+  contractOfSale: Record<string, unknown>;
+  surveyPlan: Record<string, unknown>;
+  letterOfIntent: Record<string, unknown>;
+  isSubProperty: boolean;
+  users: Record<string, unknown>;
 }
 
 export interface PropertyMeta {
@@ -29,7 +51,6 @@ export interface PropertyMeta {
   hasNextPage: boolean;
   hasPreviousPage: boolean;
 }
-
 
 export interface GetPropertiesResponse {
   data: Property[];
@@ -53,7 +74,7 @@ export interface PropertyListResponse {
   };
   status: number;
 }
-export interface propertyIdResponse{
+export interface propertyIdResponse {
   name: string;
   description: string;
   polygon: unknown;
@@ -67,8 +88,5 @@ export interface propertyIdResponse{
   letterOfIntent: string;
   isSubmitted: boolean;
   deedOfConveyance: string;
-  users: [
-    string
-  ]
+  users: [string];
 }
-

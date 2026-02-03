@@ -5,8 +5,13 @@ import Image from "next/image";
 import { useEffect } from "react";
 import Button from "@/app/components/(FormComponents)/Button";
 import Link from "next/link";
+import { useRouter } from 'next/navigation'
+import { FaPen } from "react-icons/fa";
+import { MdOutlineOpenInNew } from "react-icons/md";
 export default function Page() {
   const { hasCompany, company, loading, fetchCompany } = useCompanyStore();
+  const router = useRouter();
+  console.log('This is company', company)
   const companyData = [
     { label: "Company Name", value: company?.name },
     { label: "Verification Status", value: company?.companyVerificationStatus },
@@ -19,7 +24,8 @@ export default function Page() {
   ];
 
   useEffect(() => {
-    fetchCompany().catch(() => {});
+    fetchCompany().catch(() => { });
+    // console.log('Fetch Company Res', res)
   }, [fetchCompany]);
   if (loading) {
     return <p className="text-white">Loading company info...</p>;
@@ -50,18 +56,24 @@ export default function Page() {
   }
 
   return (
-    <div className="bg-glass-glow w-full p-6 flex flex-col gap-[30px]  text-white">
+    <div className="bg_glass_glow w-full p-6 flex flex-col gap-[30px]  text-white">
       <div className="flex justify-between text-white">
-        <h1 className="text-[25px] font-semibold">Personal Info</h1>
-        <button className="border border-gray-300 rounded-xl py-1 px-5">
-          Edit Company Profile
+        <h1 className="text-[25px] font-semibold">Company Info</h1>
+        <button onClick={() => router.push(`/update-company/${company?.id}`)} className="md:border cursor-pointer border-gray-300 rounded-xl py-1 md:px-5">
+          <span className="hidden md:flex">
+            Edit Company Profile
+
+          </span>
+          <span className="md:hidden">
+            <FaPen />
+          </span>
         </button>
       </div>
-      <div className="grid grid-cols-3 gap-[30px]">
+      <div className="grid md:grid-cols-3 gap-[30px]">
         {companyData.map((item, index) => (
           <div key={index} className="flex flex-col">
             <h3 className="font-semibold text-white">{item.label}</h3>
-            { item.label !== "Proof of Address" ? <p className="text-gray-300 text-sm">{item.value || "-"}</p> : <a target="_blank" className="underline" href={item.value}>Proof of Address</a>}
+            {item.label !== "Proof of Address" ? <p className="text-gray-300 text-sm">{item.value || "-"}</p> : <a target="_blank" className="underline flex gap-2 items-end" href={item.value}>Proof of Address <span ><MdOutlineOpenInNew size={20} /></span> </a>}
           </div>
         ))}
       </div>

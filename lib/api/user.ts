@@ -27,14 +27,15 @@ export interface UpdateUserPayload {
 }
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-export async function getCurrentUser(token: string): Promise<User> {
+export async function getCurrentUser(): Promise<User> {
   if (!BASE_URL) throw new Error("API base URL is not defined");
+  const { accessToken } = useAuthStore.getState();
 
-  const response = await fetch(`${BASE_URL}/api/v1/user/current`, {
+  const response = await fetch(`${BASE_URL}/user/current`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`, // auth header required
+      Authorization: `Bearer ${accessToken}`, // auth header required
     },
   });
 
