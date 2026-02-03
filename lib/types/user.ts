@@ -12,6 +12,7 @@ export type User = {
   state: string | null;
   lastLogin: string;
   profileImage: string | null;
+  hasCompanyProfile: boolean;
   is2fa: boolean;
   isVerified: boolean;
   isGoogleLogin: boolean;
