@@ -1,7 +1,7 @@
 import Logo from "@/public/images/Logo.png";
 import Image from "next/image";
 import Link from "next/link";
-
+import { MdDashboard } from "react-icons/md";
 // import { HiOutlineFolderOpen } from "react-icons/hi2";
 import { CiSettings } from "react-icons/ci";
 import { MdOutlineMapsHomeWork } from "react-icons/md";
@@ -13,13 +13,12 @@ import { useAuthStore } from "@/store/useAuthStore";
 import { usePathname } from "next/navigation";
 import { MdOutlineClose } from "react-icons/md";
 export const sidebarLinks = [
-  // {
-  //   label: "Dashboard",
-  //   href: "/dashboard",
-  //   icon: MdDashboard,
-  //   roles: ["USER", "SUPER_ADMIN"],
-  // },
-
+  {
+    label: "Dashboard",
+    href: "/dashboard",
+    icon: MdDashboard,
+    roles: ["USER", "SUPER_ADMIN"],
+  },
   {
     label: "Properties",
     href: "/dashboard/properties",
@@ -49,7 +48,7 @@ export const sidebarLinks = [
     label: "Map",
     href: "/dashboard/admin/view-map",
     icon: FaMapMarkedAlt,
-    roles: ["SUPER_ADMIN"],
+    roles: ["USER","SUPER_ADMIN"],
   },
   {
     label: "Property Management",
@@ -95,7 +94,9 @@ export default function Sidebar({
             .filter((link) => link.roles.includes(user.role))
             .map((link) => {
               const Icon = link.icon;
-              const isActive = pathname.startsWith(link.href);
+              const isActive = link.href === "/dashboard"
+                ? pathname === "/dashboard"
+                : pathname === link.href || pathname.startsWith(`${link.href}/`);
 
               return (
                 <Link
@@ -149,7 +150,9 @@ export default function Sidebar({
             .filter((link) => link.roles.includes(user.role))
             .map((link) => {
               const Icon = link.icon;
-              const isActive = pathname.startsWith(link.href);
+              const isActive = link.href === "/dashboard"
+                ? pathname === "/dashboard"
+                : pathname === link.href || pathname.startsWith(`${link.href}/`);
 
               return (
                 <Link

@@ -80,7 +80,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const user = await getCurrentUser();
           set({ user });
-          console.log('Refreshed triggered and this is the user', user)
+          console.log('Refreshed triggered and this is the user',user)
           return user;
         } catch (error) {
           console.error("Failed to refresh user", error);

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Sidebar from "../components/(sidebar)/Sidebar";
 import { initializeUser, useAuthStore } from "@/store/useAuthStore";
 import { FaBarsStaggered } from "react-icons/fa6";
+import Link from "next/link";
 // import { usePathname } from 'next/navigation'
 import authLogo from '@/public/images/authLogo.png'
 export default function DashboardLayout({
@@ -66,7 +67,10 @@ export default function DashboardLayout({
       <main className="flex-1 overflow-auto p-2 md:p-6 bg-gray-800">
         <div className="flex md:hidden justify-between px-2">
           <div>
-            <Image alt="Logo" src={authLogo} />
+            <Link href='/dashboard'>
+              <Image alt="Logo" src={authLogo} />
+
+            </Link>
           </div>
           <button
             className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded "
