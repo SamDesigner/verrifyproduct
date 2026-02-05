@@ -78,7 +78,7 @@ export default function Sidebar({
     <div>
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white p-4 z-40 transform 
+        className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white p-4 z-2000 transform 
         ${open ? "translate-x-0" : "-translate-x-full"} 
         transition-transform duration-300 lg:hidden`}
       >
