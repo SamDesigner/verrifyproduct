@@ -1,6 +1,6 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import {  toastError } from "../toast/toast";
-
+import { authFetch } from "./authFetch";
 import type {User} from "@/store/useAuthStore"
 // export interface UpdateUserPayload {
 //   firstName: string;
@@ -31,7 +31,7 @@ export async function getCurrentUser(): Promise<User> {
   if (!BASE_URL) throw new Error("API base URL is not defined");
   const { accessToken } = useAuthStore.getState();
 
-  const response = await fetch(`${BASE_URL}/user/current`, {
+  const response = await authFetch(`${BASE_URL}/user/current`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -55,7 +55,7 @@ export async function getCurrentUser(): Promise<User> {
 export async function updateUser(payload: UpdateUserPayload) {
   const { accessToken } = useAuthStore.getState();
 
-  const res = await fetch(`${BASE_URL}/user/update`, {
+  const res = await authFetch(`${BASE_URL}/user/update`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",

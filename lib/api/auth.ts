@@ -1,6 +1,7 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 // import { toastSuccess, toastError } from "@/lib/toast/toast";
 import { useAuthStore } from "@/store/useAuthStore";
+import { authFetch } from "./authFetch";
 import type { User } from "@/store/useAuthStore";
 interface RegisterPayload {
   firstName: string;
@@ -75,6 +76,18 @@ interface updatePasswordResponse {
   status: number;
   description?: string;
 }
+interface RefreshTokenResponse {
+  success: boolean;
+  message: string;
+  data: {
+    accessToken: string;
+    refreshToken: string;
+    user: User;
+  };
+  status: number;
+  description?: string;
+}
+
 // interface logoutResponse {
 //   success: boolean;
 //   message: string;
@@ -126,7 +139,7 @@ export async function loginUser(payload: LoginUser): Promise<AuthData> {
 }
 
 export async function verifyRegister(
-  payload: VerifyRegisterPayload
+  payload: VerifyRegisterPayload,
 ): Promise<unknown> {
   if (!BASE_URL) {
     throw new Error("API base URL is not defined");
@@ -162,7 +175,7 @@ export async function verifyRegister(
 }
 
 export async function verifyForgotPassword(
-  payload: VerifyRegisterPayload
+  payload: VerifyRegisterPayload,
 ): Promise<unknown> {
   if (!BASE_URL) {
     throw new Error("API base URL is not defined");
@@ -214,7 +227,7 @@ export async function resetPassword(payload: ResetPasswordPayload) {
 }
 export async function updatePassword(payload: updatePasswordPayload) {
   const { accessToken } = useAuthStore.getState();
-  const response = await fetch(`${BASE_URL}/user/updatePassword`, {
+  const response = await authFetch(`${BASE_URL}/user/updatePassword`, {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -230,25 +243,28 @@ export async function updatePassword(payload: updatePasswordPayload) {
 
   return data;
 }
-export async function refreshAccessToken(refreshToken: string) {
+export async function refreshAccessToken() {
+  const { refreshToken, user } = useAuthStore.getState();
+
+  if (!refreshToken || !user?.id) {
+    throw new Error("Missing refresh token or user id");
+  }
   const response = await fetch(`${BASE_URL}/auth/refresh/token`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ refreshToken }),
+    body: JSON.stringify({ refreshToken, userId: user.id }),
   });
-  if (!response.ok) {
+  const data: RefreshTokenResponse = await response.json();
+  if (!response.ok || !data.success) {
     console.log("This is the failed response", response);
     throw new Error("Failed to refresh token");
   }
 
-  return response.json() as Promise<{
-    accessToken: string;
-    refreshToken: string;
-  }>;
+  return data.data;
 }
 
 export async function forgotPassword(
-  email: string
+  email: string,
 ): Promise<forgetPasswordResponse> {
   const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
     method: "POST",
@@ -287,7 +303,6 @@ export async function logout() {
     useAuthStore.getState().logout();
   }
 }
-
 
 // export async function logout(): Promise<logoutResponse> {
 //   const { refreshToken } = useAuthStore.getState();

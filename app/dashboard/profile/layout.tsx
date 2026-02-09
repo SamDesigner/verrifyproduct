@@ -49,7 +49,7 @@ export default function ProfileLayout({
         </div>
 
         <div className="md:w-[80%] flex flex-col items-center md:items-start gap-2.5">
-          <h1 className="text-[30px] text-white font-semibold">
+          <h1 className="text-[20px] md:text-[30px] text-white font-semibold">
             {user.firstName} {user.lastName}
           </h1>
 

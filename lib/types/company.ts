@@ -1,3 +1,17 @@
+export interface Property {
+  id: string;
+  name: string;
+  description: string;
+  propertyVerificationStatus: string;
+  area: number;
+  polygon: GeoJSON.Polygon;
+  address: string;
+  city: string;
+  state: string;
+  propertyType: string;
+  isSubProperty: boolean;
+  users: unknown | null;
+}
 export interface Company {
   id: string;
   createdAt: string;
@@ -88,3 +102,4 @@ export interface UpdateCompanyResponse {
   description: string;
 
 }
+

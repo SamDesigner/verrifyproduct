@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/store/useAuthStore";
 import { PaginatedCompanyResponse } from "@/lib/types/companyProfileAdmin";
 import { VerificationStatus } from "@/lib/types/companyProfileAdmin";
+import { authFetch } from "./authFetch";
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function getAllCompanies(): Promise<PaginatedCompanyResponse> {
@@ -8,7 +9,7 @@ export async function getAllCompanies(): Promise<PaginatedCompanyResponse> {
 
   if (!accessToken) throw new Error("User not authenticated");
 
-  const res = await fetch(`${BASE_URL}/company/get`, {
+  const res = await authFetch(`${BASE_URL}/company/get`, {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },

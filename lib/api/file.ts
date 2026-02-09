@@ -1,5 +1,6 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import { useAuthStore } from "@/store/useAuthStore";
+import { authFetch } from "./authFetch";
 
 export interface FileUploadResponse {
   fileId: string;
@@ -17,7 +18,7 @@ export async function uploadFile(
   formData.append("file", file);
   formData.append("fileInfo", fileInfo);
 
-  const response = await fetch(`${BASE_URL}/file/upload`, {
+  const response = await authFetch(`${BASE_URL}/file/upload`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${accessToken}`,

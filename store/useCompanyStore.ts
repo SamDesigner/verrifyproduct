@@ -3,22 +3,20 @@ import { Company, CreateCompanyPayload } from "@/lib/types/company";
 import { getCompany, createCompany } from "@/lib/api/company";
 
 interface CompanyState {
- 
   company: Company | null;
   hasCompany: boolean;
   loading: boolean;
+  companyId: string | null;
 
-  // 🔹 NEW: Draft state for form
   companyDraft: CreateCompanyPayload;
 
-  // Actions
   fetchCompany: () => Promise<void>;
   clearCompany: () => void;
 
-  // Draft helpers
+
   updateDraftField: <K extends keyof CreateCompanyPayload>(
     key: K,
-    value: CreateCompanyPayload[K]
+    value: CreateCompanyPayload[K],
   ) => void;
 
   resetDraft: () => void;
@@ -35,20 +33,19 @@ const initialDraft: CreateCompanyPayload = {
   address: "",
   city: "",
   state: "",
-  isSubmitted:false
- 
+  isSubmitted: false,
 };
 
 export const useCompanyStore = create<CompanyState>((set, get) => ({
-  // 🔹 Existing state
+  
   company: null,
   hasCompany: false,
   loading: false,
+  companyId: null,
 
-  // 🔹 Draft state
   companyDraft: initialDraft,
 
-  // 🔹 Existing logic (UNCHANGED)
+  
   fetchCompany: async () => {
     set({ loading: true });
     try {
@@ -57,6 +54,7 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
         company,
         hasCompany: Boolean(company),
         loading: false,
+        companyId: company ? company.id : null,
       });
     } catch (error) {
       set({ loading: false });
@@ -68,10 +66,11 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
     set({
       company: null,
       hasCompany: false,
+       companyId: null,
     });
   },
 
-  // 🔹 Draft field updater
+  
   updateDraftField: (key, value) =>
     set((state) => ({
       companyDraft: {
@@ -82,16 +81,15 @@ export const useCompanyStore = create<CompanyState>((set, get) => ({
 
   resetDraft: () => set({ companyDraft: initialDraft }),
 
-  // 🔹 FINAL submit (inject isSubmitted here)
+
   submitCompanyDraft: async () => {
     const payload: CreateCompanyPayload = {
       ...get().companyDraft,
-      isSubmitted: true, 
+      isSubmitted: true,
     };
 
     const response = await createCompany(payload);
 
-    // Optional: refresh company from backend
     await get().fetchCompany();
 
     set({

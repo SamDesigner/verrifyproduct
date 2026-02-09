@@ -38,6 +38,12 @@ export const sidebarLinks = [
     icon: TbBuildingSkyscraper,
     roles: ["SUPER_ADMIN"],
   },
+  {
+    label: "Company Properties",
+    href: "/dashboard/companyproperties",
+    icon: TbBuildingSkyscraper,
+    roles: ["USER"],
+  },
   // {
   //   label: "User Management",
   //   href: "/dashboard/admin/user-management",

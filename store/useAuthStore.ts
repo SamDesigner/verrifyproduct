@@ -65,7 +65,7 @@ export const useAuthStore = create<AuthState>()(
           throw new Error("No refresh token or user");
         }
 
-        const tokens = await refreshAccessToken(refreshToken);
+        const tokens = await refreshAccessToken();
 
         set({
           accessToken: tokens.accessToken,

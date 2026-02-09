@@ -1,5 +1,6 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 import { useAuthStore } from "@/store/useAuthStore";
+import { authFetch } from "./authFetch";
 import {
   GetPropertiesResponse,
   PropertyListResponse,
@@ -25,7 +26,7 @@ export interface CreatePropertyPayload {
 export async function createProperty(payload: CreatePropertyPayload) {
   const { accessToken } = useAuthStore.getState();
   if (!accessToken) throw new Error("User not authenticated");
-  const res = await fetch(`${BASE_URL}/property`, {
+  const res = await authFetch(`${BASE_URL}/property`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -47,7 +48,7 @@ export async function getProperties(): Promise<GetPropertiesResponse> {
   const { accessToken } = useAuthStore.getState();
   if (!accessToken) throw new Error("User not authenticated");
 
-  const res = await fetch(`${BASE_URL}/property/get`, {
+  const res = await authFetch(`${BASE_URL}/property/get`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -75,7 +76,7 @@ export async function getPropertiesByViewport(params: {
     west: params.west.toString(),
     ...(params.zoom && { zoom: params.zoom.toString() }),
   });
-  const res = await fetch(`${BASE_URL}/property/viewport?${query}`, {
+  const res = await authFetch(`${BASE_URL}/property/viewport?${query}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -103,7 +104,7 @@ export async function getNearbyProperties(params: {
     radiusKm: params.radiusKm.toString(),
   });
 
-  const res = await fetch(`${BASE_URL}/property/point?${query}`, {
+  const res = await authFetch(`${BASE_URL}/property/point?${query}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -134,7 +135,7 @@ export async function getPropertiesByLocation(params:{
   if (params.propertyType) query.append("propertyType", params.propertyType);
   if (params.status) query.append("status", params.status);
 
-    const res = await fetch(
+    const res = await authFetch(
     `${BASE_URL}/property/location/${params.locationName}?${query.toString()}`,
     {
       method: "GET",
@@ -156,7 +157,7 @@ export async function updateProperty(
 ): Promise<propertyIdResponse> {
   const { accessToken } = useAuthStore.getState();
   if (!accessToken) throw new Error("User not authenticated");
-  const res = await fetch(`${BASE_URL}/property/${propertyId}`, {
+  const res = await authFetch(`${BASE_URL}/property/${propertyId}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -177,7 +178,7 @@ export async function updatePropertyVerificationStatus(
   const { accessToken } = useAuthStore.getState();
   if (!accessToken) throw new Error("User not authenticated");
 
-  const res = await fetch(`${BASE_URL}/property/status/${propertyId}`, {
+  const res = await authFetch(`${BASE_URL}/property/status/${propertyId}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -202,7 +203,7 @@ export async function updatePropertyVerificationStatus(
 export async function getPropertyById(propertyId: string) {
     const { accessToken } = useAuthStore.getState();
   if (!accessToken) throw new Error("User not authenticated");
-  const res = await fetch(`${BASE_URL}/property/${propertyId}`, {
+  const res = await authFetch(`${BASE_URL}/property/${propertyId}`, {
     method: "GET",
     headers: {
       Accept: "application/json",

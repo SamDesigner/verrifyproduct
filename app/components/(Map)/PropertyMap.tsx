@@ -208,7 +208,7 @@ export default function PropertyMap() {
       map.remove();
       mapRef.current = null;
     };
-  });
+  },[]);
 
   /* =======================
      Render
@@ -222,17 +222,17 @@ export default function PropertyMap() {
           Properties loaded: {properties.length}
         </div>
       </div>
-      <div className="absolute top-4 left-4  bg-black/70 p-3 rounded flex gap-2 z-2000">
+      <div className="absolute top-4 left-4  bg-white/70 p-3 rounded flex gap-2 z-1000">
         <input
           type="text"
           placeholder="Search by location (e.g. GRA, Lekki)"
           value={locationQuery}
           onChange={(e) => setLocationQuery(e.target.value)}
-          className="px-3 py-2 text-black rounded w-64"
+          className="px-3 py-2 text-black rounded w-full md:w-64"
         />
         <button
           onClick={() => searchByLocation(locationQuery)}
-          className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-green-700"
         >
           Search
         </button>
