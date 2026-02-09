@@ -6,7 +6,7 @@ interface CompanyState {
   company: Company | null;
   hasCompany: boolean;
   loading: boolean;
-  companyId: string | null;
+  companyId?: string | null;
 
   companyDraft: CreateCompanyPayload;
 

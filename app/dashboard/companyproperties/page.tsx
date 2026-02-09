@@ -9,7 +9,7 @@ import map from '@/public/images/map.png'
 import Image from 'next/image'
 import Button from '@/app/components/(FormComponents)/Button'
 const Page = () => {
-  const [properties, setProperties] = useState<Property[] | null>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
   //   const [error, setError] = useState<string | null>(null);
   //   const { hasCompany, loading } = useCompanyStore(); 
   //   const [fetching, setFetching] = useState(true);
@@ -76,10 +76,11 @@ const Page = () => {
               <div>
                 <Button text="View Property" />
               </div>
-        ))}
             </div>
           </div>
-        )
+        ))}
+      </div>
+    </div>
+  )
 }
-
-        export default Page
+export default Page
