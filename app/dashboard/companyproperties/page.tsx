@@ -7,12 +7,14 @@ import { useCompanyStore } from "@/store/useCompanyStore";
 import { Property } from '@/lib/types/company';
 import map from '@/public/images/map.png'
 import Image from 'next/image'
+import { useRouter } from "next/navigation";
+import VerificationStatus from "@/app/components/(global)/VerificationStatus";
 import Button from '@/app/components/(FormComponents)/Button'
 const Page = () => {
   const [properties, setProperties] = useState<Property[]>([]);
+  const router = useRouter()
   //   const [error, setError] = useState<string | null>(null);
-  //   const { hasCompany, loading } = useCompanyStore(); 
-  //   const [fetching, setFetching] = useState(true);
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
     //     // if (!hasCompany) {
     //     //   setFetching(false);
@@ -33,6 +35,8 @@ const Page = () => {
       } catch (err) {
         //         // setError(err);
         console.log("Error fetching properties:", err);
+      }finally{
+        setLoading(false)
       }
     };
 
@@ -40,9 +44,9 @@ const Page = () => {
   }, []);
 
 
-  //   if (loading ) {
-  //     return <p className="text-white">Loading properties…</p>;
-  //   }
+    if (loading ) {
+      return <p className="text-white">Loading properties…</p>;
+    }
 
   //   if (error) {
   //     return <p className="text-red-500">{error}</p>;
@@ -54,11 +58,14 @@ const Page = () => {
         {properties?.map((property) => (
           <div
             key={property.id}
-            className="bg-gray-900 rounded-xl p-4 text-white"
+            className="bg-gray-900 rounded-xl relative p-4 text-white"
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mt-6">
               <Image className="h-[50px] w-[50px]" alt="Map Image" src={map} />
               <h3 className="font-semibold text-[30px]">{property.name}</h3>
+            </div>
+            <div className="absolute right-0 top-0">
+              <VerificationStatus property={property.propertyVerificationStatus} />
             </div>
             <p className="text-gray-400 flex flex-col font-semibold mt-5">
               <span className="text-white">Description</span>
@@ -73,8 +80,8 @@ const Page = () => {
               <span>{property.address}</span>
             </p>
             <div>
-              <div>
-                <Button text="View Property" />
+              <div className="mt-5">
+                <Button onClick={() =>  router.push(`/dashboard/companyproperties/${property.id}`)} text="View Property" />
               </div>
             </div>
           </div>

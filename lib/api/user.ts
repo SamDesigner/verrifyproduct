@@ -1,7 +1,7 @@
 import { useAuthStore } from "@/store/useAuthStore";
-import {  toastError } from "../toast/toast";
+import { toastError } from "../toast/toast";
 import { authFetch } from "./authFetch";
-import type {User} from "@/store/useAuthStore"
+import type { User } from "@/store/useAuthStore";
 // export interface UpdateUserPayload {
 //   firstName: string;
 //   lastName: string;
@@ -30,7 +30,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 export async function getCurrentUser(): Promise<User> {
   if (!BASE_URL) throw new Error("API base URL is not defined");
   const { accessToken } = useAuthStore.getState();
+  console.log("This is the token", accessToken);
 
+ 
   const response = await authFetch(`${BASE_URL}/user/current`, {
     method: "GET",
     headers: {
@@ -38,7 +40,6 @@ export async function getCurrentUser(): Promise<User> {
       Authorization: `Bearer ${accessToken}`, // auth header required
     },
   });
-
   const data = await response.json();
 
   if (!response.ok || !data.success) {
@@ -49,8 +50,6 @@ export async function getCurrentUser(): Promise<User> {
   return data.data; // this is your User object
 }
 // lib/api/user/index.ts
-
-
 
 export async function updateUser(payload: UpdateUserPayload) {
   const { accessToken } = useAuthStore.getState();
@@ -65,7 +64,7 @@ export async function updateUser(payload: UpdateUserPayload) {
   });
 
   const data = await res.json();
-  console.log('This is the response from the API',data)
+  console.log("This is the response from the API", data);
   if (!res.ok || !data.success) {
     throw new Error(data.message || "Failed to update profile");
   }

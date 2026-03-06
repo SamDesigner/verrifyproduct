@@ -6,6 +6,8 @@ import Sidebar from "../components/(sidebar)/Sidebar";
 import { initializeUser, useAuthStore } from "@/store/useAuthStore";
 import { FaBarsStaggered } from "react-icons/fa6";
 import Link from "next/link";
+import Logo from '@/public/images/Logo.png'
+import Header from "../components/(Header)/Header";
 // import { usePathname } from 'next/navigation'
 import authLogo from '@/public/images/authLogo.png'
 export default function DashboardLayout({
@@ -42,7 +44,11 @@ export default function DashboardLayout({
 
   // Block rendering until auth is resolved
   if (!hasHydrated) {
-    return <div className="h-screen flex items-center justify-center">Loading...</div>;
+    return <div className="h-screen flex flex-col items-center justify-center bg-gray-900 ">
+      <Image className="object-cover" src={Logo} alt="Company Logo" />
+      <div className="quantum-spinner h-[30px] w-[30px]!"></div>
+
+    </div>;
   }
 
   if (!accessToken) {
@@ -54,39 +60,45 @@ export default function DashboardLayout({
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
-      {open && (
-        <div
-          className="fixed inset-0 bg-black/50 lg:hidden z-30"
-          onClick={() => setOpen(false)}
-        />
-      )}
+    <>
+      <Header />
 
-      <Sidebar open={open} setOpen={setOpen} />
+      <div className="flex h-screen bg-gray-100">
+        {open && (
+          <div
+            className="fixed inset-0 bg-black/50 lg:hidden z-30"
+            onClick={() => setOpen(false)}
+          />
+        )}
 
-      <main className="flex-1 overflow-auto p-2 md:p-6 bg-gray-800">
-        <div className="flex md:hidden justify-between px-2">
-          <div>
-            <Link href='/dashboard'>
-              <Image alt="Logo" src={authLogo} />
+        <Sidebar open={open} setOpen={setOpen} />
 
-            </Link>
+
+        <main className="flex-1 overflow-auto p-2 md:p-6 bg-gray-800 pb-[200px]! ">
+
+          <div className="flex md:hidden justify-between px-2">
+            <div>
+              <Link href='/dashboard'>
+                <Image alt="Logo" src={authLogo} />
+
+              </Link>
+            </div>
+            <button
+              className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded "
+              onClick={() => setOpen(true)}
+            >
+              <FaBarsStaggered size={22} />
+            </button>
           </div>
-          <button
-            className="lg:hidden mb-4 p-2 bg-gray-800 text-white rounded "
-            onClick={() => setOpen(true)}
-          >
-            <FaBarsStaggered size={22} />
-          </button>
-        </div>
 
-        {/* <div className="py-6 text-center md:text-left">
+          {/* <div className="py-6 text-center md:text-left">
           <h1 className="text-2xl font-bold text-white">{title}</h1>
 
         </div> */}
 
-        {children}
-      </main>
-    </div>
+          {children}
+        </main>
+      </div>
+    </>
   );
 }

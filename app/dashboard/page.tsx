@@ -1,3 +1,4 @@
+"use client"
 import Link from "next/link";
 import CompanyImage from "@/public/images/companyImage.png";
 import Image from 'next/image';
@@ -6,6 +7,8 @@ import Button from "@/app/components/(FormComponents)/Button";
 import Map from '@/public/images/map.png'
 import { TbMapShare } from "react-icons/tb";
 import { MdDashboard } from "react-icons/md";
+import landVector from '@/public/images/landVector.png'
+// import Image from "next/image"
 const page = () => {
   return (
     <div className="p-3">
@@ -13,8 +16,22 @@ const page = () => {
         <span><MdDashboard size={20} /></span>
         <h1 className="text-[20px] font-semibold">Dashboard</h1>
       </div>
-      <div className="grid md:grid-cols-2 gap-5">
-        <div className="bg-gray-900 rounded-xl p-3 flex flex-col items-center gap-2">
+      <div className="grid md:grid-cols-1 gap-5">
+        <div className="bg-gray-900 relative rounded-xl h-[300px] overflow-hidden p-3 flex flex-col items-center gap-2">
+          <Image className="h-[60px] w-[60px]" src={CompanyImage} alt='Company Image' />
+          <h1 className="text-white">No Company Profile yet</h1>
+          <div  className="absolute left-0 bottom-[-20%]">
+            <Image className=" object-cover " src={landVector} alt="Land Vector" />
+
+
+          </div>
+          <div className="w-[200px]">
+            <Link href="/create-company">
+              <Button text="Create Profile" />
+            </Link>
+          </div>
+        </div>
+        {/* <div className="bg-gray-900 rounded-xl p-3 flex flex-col items-center gap-2">
           <Image className="h-[60px] w-[60px]" src={CompanyImage} alt='Company Image' />
           <h1 className="text-white">No Company Profile yet</h1>
           <div className="w-[200px]">
@@ -22,16 +39,7 @@ const page = () => {
               <Button text="Create Profile" />
             </Link>
           </div>
-        </div>
-        <div className="bg-gray-900 rounded-xl p-3 flex flex-col items-center gap-2">
-          <Image className="h-[60px] w-[60px]" src={CompanyImage} alt='Company Image' />
-          <h1 className="text-white">No Company Profile yet</h1>
-          <div className="w-[200px]">
-            <Link href="/create-company">
-              <Button text="Create Profile" />
-            </Link>
-          </div>
-        </div>
+        </div> */}
       </div>
       <div className="flex flex-col md:flex-row  mt-10 gap-5">
         <div className="flex-1">

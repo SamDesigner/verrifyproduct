@@ -76,7 +76,7 @@ const Page = () => {
               </div>
               <div className="p-2 w-full">
                 <div className="absolute top-0 right-0">
-                  <VerificationStatus property={property} />
+                  <VerificationStatus property={property.propertyVerificationStatus} />
                 </div>  
                 <h2 className="text-white font-semibold text-[22px]">
                   {property.name}

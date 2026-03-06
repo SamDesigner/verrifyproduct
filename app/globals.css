@@ -237,3 +237,49 @@
   filter: blur(12px);
   z-index: -1;
 }
+
+
+/* Styles for My Spinner */
+.quantum-spinner {
+  width: 120px;
+  aspect-ratio: 1;
+  position: relative;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 25px rgba(0, 200, 255, 0.6));
+}
+
+.quantum-spinner::before,
+.quantum-spinner::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background:
+    conic-gradient(
+      from var(--a),
+      transparent 0%,
+      #00eaff 15%,
+      #9d00ff 30%,
+      transparent 45%,
+      #00ff9d 60%,
+      transparent 75%,
+      #00eaff 90%,
+      transparent 100%
+    );
+  mask:
+    radial-gradient(circle at center, transparent 35%, black 36%);
+  animation: braid 1.8s linear infinite;
+}
+
+.quantum-spinner::after {
+  filter: blur(6px);
+  opacity: 0.7;
+  animation-direction: reverse;
+  animation-duration: 2.6s;
+}
+
+@keyframes braid {
+  from { --a: 0deg; transform: rotate(0deg) scale(1); }
+  50%  { transform: rotate(180deg) scale(1.08); }
+  to   { --a: 360deg; transform: rotate(360deg) scale(1); }
+}

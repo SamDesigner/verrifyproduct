@@ -216,3 +216,4 @@ export async function getPropertyById(propertyId: string) {
 
   return res.json();
 }
+

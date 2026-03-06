@@ -14,7 +14,7 @@ export default function FileUpload({
   fileType,
   label = "Upload File",
   onUploadSuccess,
-  allowedTypes = ["image/jpeg", "image/png"],
+  allowedTypes = ["application/pdf"],
   maxSizeMB = 5,
 }: FileUploadProps) {
   const [loading, setLoading] = useState(false);

@@ -1,74 +1,131 @@
-import Logo from "@/public/images/Logo.png";
-import Image from "next/image";
+// import Logo from "@/public/images/Logo.png";
+// import Image from "next/image";
 import Link from "next/link";
-import { MdDashboard } from "react-icons/md";
-// import { HiOutlineFolderOpen } from "react-icons/hi2";
-import { CiSettings } from "react-icons/ci";
-import { MdOutlineMapsHomeWork } from "react-icons/md";
-import { FaUser } from "react-icons/fa";
-import { TbBuildingSkyscraper } from "react-icons/tb";
-import { PiWarehouseBold } from "react-icons/pi";
-import { FaMapMarkedAlt } from "react-icons/fa";
+import {
+  LayoutDashboard,
+  Home,
+  BadgeCheck,
+  User,
+  Building2,
+  Warehouse,
+  Map,
+  Settings,
+  ShieldCheck,
+  X,
+} from "lucide-react";
 import { useAuthStore } from "@/store/useAuthStore";
 import { usePathname } from "next/navigation";
-import { MdOutlineClose } from "react-icons/md";
+
 export const sidebarLinks = [
   {
     label: "Dashboard",
     href: "/dashboard",
-    icon: MdDashboard,
+    icon: LayoutDashboard,
     roles: ["USER", "SUPER_ADMIN"],
   },
   {
-    label: "Properties",
+    label: "Property",
     href: "/dashboard/properties",
-    icon: MdOutlineMapsHomeWork,
+    icon: Home,
     roles: ["USER"],
   },
-
+  {
+    label: "Verify Property",
+    href: "/dashboard/verifyproperty",
+    icon: BadgeCheck,
+    roles: ["USER"],
+  },
   {
     label: "Profile",
     href: "/dashboard/profile",
-    icon: FaUser,
+    icon: User,
     roles: ["USER", "SUPER_ADMIN"],
   },
   {
     label: "Company Profiles",
     href: "/dashboard/admin/company-profiles",
-    icon: TbBuildingSkyscraper,
+    icon: Building2,
     roles: ["SUPER_ADMIN"],
   },
   {
     label: "Company Properties",
     href: "/dashboard/companyproperties",
-    icon: TbBuildingSkyscraper,
+    icon: Building2,
     roles: ["USER"],
   },
   // {
   //   label: "User Management",
   //   href: "/dashboard/admin/user-management",
-  //   icon: PiWarehouseBold,
+  //   icon: Warehouse,
   //   roles: ["SUPER_ADMIN"],
   // },
   {
     label: "Map",
     href: "/dashboard/admin/view-map",
-    icon: FaMapMarkedAlt,
-    roles: ["USER","SUPER_ADMIN"],
+    icon: Map,
+    roles: ["USER", "SUPER_ADMIN"],
   },
   {
     label: "Property Management",
     href: "/dashboard/admin/property-management",
-    icon: PiWarehouseBold,
+    icon: Warehouse,
+    roles: ["SUPER_ADMIN"],
+  },
+  {
+    label: "Verification Requests",
+    href: "/dashboard/admin/verification-request",
+    icon: ShieldCheck,
     roles: ["SUPER_ADMIN"],
   },
   {
     label: "Settings",
     href: "/dashboard/settings",
-    icon: CiSettings,
+    icon: Settings,
     roles: ["USER", "SUPER_ADMIN"],
   },
 ];
+
+// this component is declared at module scope rather than inside Sidebar so
+// it won't be recreated on every render (fixes the "cannot create components
+// during render" error).
+
+type NavLinksProps = {
+  filteredLinks: typeof sidebarLinks;
+  onClickLink?: () => void;
+};
+
+const NavLinks: React.FC<NavLinksProps> = ({ filteredLinks, onClickLink }) => {
+  const pathname = usePathname();
+
+  return (
+    <nav className="flex flex-col gap-1">
+      {filteredLinks.map((link) => {
+        const Icon = link.icon;
+        const isActive =
+          link.href === "/dashboard"
+            ? pathname === "/dashboard"
+            : pathname === link.href ||
+            pathname.startsWith(`${link.href}/`);
+
+        return (
+          <Link
+            key={link.href}
+            href={link.href}
+            onClick={onClickLink}
+            className={`flex items-center gap-3 px-3 py-2.5 rounded-md text-sm transition-colors duration-150
+              ${isActive
+                ? "bg-blue-600 text-white"
+                : "text-gray-300 hover:bg-gray-800 hover:text-white"
+              }`}
+          >
+            <Icon size={18} className="shrink-0" />
+            <span className="truncate">{link.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
+  );
+};
 
 export default function Sidebar({
   open,
@@ -77,104 +134,49 @@ export default function Sidebar({
   open: boolean;
   setOpen: (v: boolean) => void;
 }) {
-  const pathname = usePathname();
   const { user } = useAuthStore();
   if (!user) return null;
+
+  const filteredLinks = sidebarLinks.filter((link) =>
+    link.roles.includes(user.role)
+  );
+
   return (
     <div>
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white p-4 z-2000 transform 
-        ${open ? "translate-x-0" : "-translate-x-full"} 
-        transition-transform duration-300 lg:hidden`}
+        className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white z-2000 transform flex flex-col
+          ${open ? "translate-x-0" : "-translate-x-full"}
+          transition-transform duration-300 lg:hidden`}
       >
-        <button
-          className="mb-6 p-2"
-          onClick={() => setOpen(false)}
-        >
-          <MdOutlineClose size={22} />
-        </button>
+        {/* Close button */}
+        <div className="flex items-center justify-end p-4 shrink-0">
+          <button
+            className="p-1.5 rounded-md hover:bg-gray-800 transition-colors text-gray-400 hover:text-white"
+            onClick={() => setOpen(false)}
+          >
+            <X size={20} />
+          </button>
+        </div>
 
-        <nav className="flex flex-col gap-3">
-          {sidebarLinks
-            .filter((link) => link.roles.includes(user.role))
-            .map((link) => {
-              const Icon = link.icon;
-              const isActive = link.href === "/dashboard"
-                ? pathname === "/dashboard"
-                : pathname === link.href || pathname.startsWith(`${link.href}/`);
-
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setOpen(false)}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-md transition
-                  ${isActive ? "bg-blue-600 text-white" : "hover:bg-gray-800"}
-                `}
-                >
-                  <Icon size={18} />
-                  {link.label}
-                </Link>
-              );
-            })}
-        </nav>
+        {/* Scrollable nav */}
+        <div className="flex-1 overflow-y-auto px-3 pb-4">
+          <NavLinks filteredLinks={filteredLinks} onClickLink={() => setOpen(false)} />
+        </div>
       </aside>
 
       {/* Desktop Sidebar */}
-      {/* <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:h-full bg-gray-900 text-white p-4 gap-10">
-        <div>
+      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:h-full bg-gray-900 text-white overflow-hidden">
+        {/* <div className="p-4 shrink-0">
           <Image src={Logo} alt="Logo" />
+        </div> */}
+
+        {/* Scrollable nav area */}
+        <div className="flex-1 overflow-y-auto px-3 py-4">
+          <NavLinks filteredLinks={filteredLinks} />
         </div>
-
-        <nav className="flex flex-col gap-3">
-          {sidebarLinks.map((link, index) => {
-            const Icon = link.icon
-            return (
-              <Link
-                key={index}
-                href={link.href}
-                className="hover:bg-gray-700 p-2 rounded flex items-center gap-2"
-              >
-                <div>
-                  <Icon size={25} />
-                </div>
-                <div>{link.label}</div>
-              </Link>
-            );
-          })}
-
- 
-        </nav>
-      </aside> */}
-      <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:h-full bg-gray-900 text-white p-4 gap-10">
-        <div>
-          <Image src={Logo} alt="Logo" />
-        </div>
-        <nav className="flex flex-col gap-3">
-          {sidebarLinks
-            .filter((link) => link.roles.includes(user.role))
-            .map((link) => {
-              const Icon = link.icon;
-              const isActive = link.href === "/dashboard"
-                ? pathname === "/dashboard"
-                : pathname === link.href || pathname.startsWith(`${link.href}/`);
-
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-md transition
-                  ${isActive ? "bg-blue-600 text-white" : "hover:bg-gray-800"}
-                `}
-                >
-                  <Icon size={18} />
-                  {link.label}
-                </Link>
-              );
-            })}
-        </nav>
       </aside>
     </div>
   );
+
 }
