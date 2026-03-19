@@ -1,5 +1,5 @@
 import FileUpload from "@/app/components/(FormComponents)/FileUpload";
-import { useVerificationStore } from "@/store/useVerificationStore";
+import { useUpdateVerificationStore } from "@/store/useUpdateVerificationStore";
 
 const documents = [
   { fileType: "CERTIFICATE_OF_OCCUPANCY", label: "Certificate of Occupancy", description: "Official document confirming legal ownership" },
@@ -7,21 +7,17 @@ const documents = [
   { fileType: "SURVEY_PLAN",              label: "Survey Plan",               description: "Technical drawing of the property boundaries" },
 ];
 
-export default function StepTwo() {
-  const { addVerificationFile } = useVerificationStore();
+export default function UpdateStepTwo() {
+  const { addVerificationFile } = useUpdateVerificationStore();
 
   return (
     <div className="flex flex-col gap-5">
       <p className="text-slate-400 text-sm">
-        Upload the required property documents. All files must be clear and legible.
+        Upload updated documents if needed. Previously uploaded files are already saved.
       </p>
-
       {documents.map(({ fileType, label, description }) => (
-        <div
-          key={fileType}
-          className="rounded-xl p-4 flex flex-col gap-3"
-          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
-        >
+        <div key={fileType} className="rounded-xl p-4 flex flex-col gap-3"
+          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}>
           <div>
             <p className="text-sm font-semibold text-slate-200">{label}</p>
             <p className="text-xs text-slate-500 mt-0.5">{description}</p>

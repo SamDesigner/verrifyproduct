@@ -164,3 +164,81 @@ export interface VerdictResponse {
   description?: string;
   status: number;
 }
+
+// / ── My Requests ────────────────────────────────────────────────────────────
+ 
+export interface MyRequestProperty {
+  id: string;
+  name: string;
+  description: string;
+  address: string;
+  city: string;
+  state: string;
+  area: number | null;
+  pin: string | null;
+  polygon: {
+    type: "Polygon";
+    coordinates: number[][][];
+  };
+  propertyType: string;
+  propertyVerificationStatus: string;
+  isSubProperty: boolean;
+  certificationOfOccupancy: string | null;
+  contractOfSale: string | null;
+  surveyPlan: string | null;
+  letterOfIntent: string | null;
+  deedOfConveyance: string | null;
+  users: unknown;
+}
+ 
+export interface MyRequestItem {
+  id: string;
+  createdAt: string;
+  updatedAt: string;
+  stage: string;
+  caseId: string | null;
+  adminComments: string | null;
+  reviewedAt: string | null;
+  verificationFiles: string[];
+  adminStageFiles: string[];
+  property: MyRequestProperty;
+  user: unknown;
+  reviewUser: unknown;
+  stageHistory: StageHistory[];
+}
+ 
+export interface MyRequestsMeta {
+  totalItems: number;
+  itemCount: number;
+  itemsPerPage: number;
+  totalPages: number;
+  currentPage: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+}
+ 
+export interface MyRequestsData {
+  data: MyRequestItem[];
+  meta: MyRequestsMeta;
+}
+ 
+export interface MyRequestsResponse {
+  success: boolean;
+  message: string;
+  data: MyRequestsData;
+  status: number;
+}
+
+export interface UpdateVerificationPayload {
+  propertyId?: string;
+  name?: string;
+  description?: string;
+  polygon?: unknown;
+  propertyType?: "LAND";
+  address?: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  verificationFiles?: string[];
+}
+ 

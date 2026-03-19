@@ -1,5 +1,6 @@
 // import Logo from "@/public/images/Logo.png";
 // import Image from "next/image";
+"use client";
 import Link from "next/link";
 import {
   LayoutDashboard,
@@ -76,6 +77,12 @@ export const sidebarLinks = [
     href: "/dashboard/admin/verification-request",
     icon: ShieldCheck,
     roles: ["SUPER_ADMIN"],
+  },
+  {
+    label: "My Requests",
+    href: "/dashboard/my-requests",
+    icon: ShieldCheck,
+    roles: ["USER"],
   },
   {
     label: "Settings",

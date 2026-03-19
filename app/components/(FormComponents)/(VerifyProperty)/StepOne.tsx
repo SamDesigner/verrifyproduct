@@ -1,95 +1,132 @@
 "use client";
-
 import { useVerificationStore } from "@/store/useVerificationStore";
+
+const inputClass = `
+  w-full px-4 py-3 rounded-xl text-sm text-slate-200 placeholder-slate-600
+  outline-none transition-all duration-200
+`;
+const inputStyle = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.08)",
+};
+
+function Field({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-xs font-semibold uppercase tracking-widest text-slate-500">
+        {label}
+      </label>
+      {children}
+    </div>
+  );
+}
 
 export default function StepOne() {
   const { draft, updateField } = useVerificationStore();
 
-  return (
-    <div className="flex flex-col gap-6">
+  const handleFocus = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    e.currentTarget.style.border = "1px solid rgba(99,102,241,0.5)";
+    e.currentTarget.style.background = "rgba(99,102,241,0.04)";
+  };
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    e.currentTarget.style.border = "1px solid rgba(255,255,255,0.08)";
+    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+  };
 
-      <div className="flex flex-col gap-2">
-        <label className="text-gray-200">Property Name</label>
+  return (
+    <div className="flex flex-col gap-5">
+      <Field label="Property Name">
         <input
           type="text"
           value={draft.name}
           onChange={(e) => updateField("name", e.target.value)}
-          className="glass-input p-3"
-          placeholder="Enter property name"
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={inputClass}
+          style={inputStyle}
+          placeholder="e.g. Lekki Phase 1 Plot"
         />
-      </div>
+      </Field>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-gray-200">Description</label>
+      <Field label="Description">
         <textarea
           value={draft.description}
           onChange={(e) => updateField("description", e.target.value)}
-          className="glass-input p-3"
-          placeholder="Enter property description"
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          rows={4}
+          className={`${inputClass} resize-none`}
+          style={inputStyle}
+          placeholder="Describe the property..."
         />
-      </div>
+      </Field>
 
-      <div className="flex flex-col gap-2">
-        <label className="text-gray-200">Property Type</label>
+      <Field label="Property Type">
         <select
           value={draft.propertyType}
-          onChange={(e) =>
-            updateField("propertyType", e.target.value as "LAND")
-          }
-          className="glass-input p-3"
+          onChange={(e) => updateField("propertyType", e.target.value as "LAND")}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
+          className={inputClass}
+          style={{ ...inputStyle, cursor: "pointer" }}
         >
           <option value="LAND">Land</option>
         </select>
-      </div>
-          {/* Address */}
-      <div className="flex flex-col gap-2">
-        <label className="text-gray-200">Address</label>
-        <input
-          type="text"
-          value={draft.address}
-          onChange={(e) => updateField("address", e.target.value)}
-          className="glass-input p-3"
-          placeholder="Enter property address"
-        />
-      </div>
+      </Field>
 
-      {/* City */}
-      <div className="flex flex-col gap-2">
-        <label className="text-gray-200">City</label>
-        <input
-          type="text"
-          value={draft.city}
-          onChange={(e) => updateField("city", e.target.value)}
-          className="glass-input p-3"
-          placeholder="Enter city"
-        />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+        <Field label="Address">
+          <input
+            type="text"
+            value={draft.address}
+            onChange={(e) => updateField("address", e.target.value)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            className={inputClass}
+            style={inputStyle}
+            placeholder="Street address"
+          />
+        </Field>
+
+        <Field label="City">
+          <input
+            type="text"
+            value={draft.city}
+            onChange={(e) => updateField("city", e.target.value)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            className={inputClass}
+            style={inputStyle}
+            placeholder="City"
+          />
+        </Field>
+
+        <Field label="State">
+          <input
+            type="text"
+            value={draft.state}
+            onChange={(e) => updateField("state", e.target.value)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            className={inputClass}
+            style={inputStyle}
+            placeholder="State"
+          />
+        </Field>
+
+        <Field label="Country">
+          <input
+            type="text"
+            value={draft.country}
+            onChange={(e) => updateField("country", e.target.value)}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
+            className={inputClass}
+            style={inputStyle}
+            placeholder="Country"
+          />
+        </Field>
       </div>
-
-      {/* State */}
-      <div className="flex flex-col gap-2">
-        <label className="text-gray-200">State</label>
-        <input
-          type="text"
-          value={draft.state}
-          onChange={(e) => updateField("state", e.target.value)}
-          className="glass-input p-3"
-          placeholder="Enter state"
-        />
-      </div>
-
-      {/* Country */}
-      <div className="flex flex-col gap-2">
-        <label className="text-gray-200">Country</label>
-        <input
-          type="text"
-          value={draft.country}
-          onChange={(e) => updateField("country", e.target.value)}
-          className="glass-input p-3"
-          placeholder="Enter country"
-        />
-      </div>
-
-
     </div>
   );
 }
