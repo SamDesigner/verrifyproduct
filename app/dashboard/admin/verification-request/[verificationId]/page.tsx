@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { getVerificationById, assignVerification, submitVerdict } from "@/lib/api/adminVerification";
+import { getVerificationById, assignVerification, submitVerdict,  } from "@/lib/api/adminVerification";
+import { advanceVerificationStage  } from "@/lib/api/advanceStage";
 import { useAuthReady } from "@/hooks/useAuthReady";
 import { useAuthStore } from "@/store/useAuthStore";
 import { VerificationDetail, VerdictType } from "@/lib/types/verification";
 import { VerificationBadge, VerdictModal } from "@/app/components/adminVerification";
+import { AdvanceStageModal } from "@/app/components/adminVerification/AdvanceStageModal";
 import {
   DetailCard,
   DetailRow,
@@ -15,14 +17,18 @@ import {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+    day: "2-digit", month: "short", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
   });
 }
 
+// Stages that can be advanced and what they advance to
+const ADVANCE_STAGE_MAP: Record<string, string> = {
+  PAYMENT_VERIFIED: "STAGE_1",
+  STAGE_1:          "STAGE_2",
+  STAGE_2:          "STAGE_3",
+  STAGE_3:          "VERIFICATION_COMPLETE",
+};
 const VerificationDetailPage = () => {
   const router = useRouter();
   const { verificationId } = useParams<{ verificationId: string }>();
@@ -34,13 +40,12 @@ const VerificationDetailPage = () => {
   const [error, setError] = useState<string | null>(null);
   const [assigning, setAssigning] = useState(false);
   const [verdictModalOpen, setVerdictModalOpen] = useState(false);
+  const [advanceModalOpen, setAdvanceModalOpen] = useState(false);
 
   useEffect(() => {
     if (!isReady || !verificationId) return;
-
     setLoading(true);
     setError(null);
-
     getVerificationById(verificationId)
       .then((res) => setDetail(res.data))
       .catch((err) => setError(err.message ?? "Something went wrong"))
@@ -51,15 +56,16 @@ const VerificationDetailPage = () => {
   const isAssigned = !!detail?.reviewUser;
   const isAssignedToMe = detail?.reviewUser?.id === currentUser?.id;
   const isFinalized = ["VERIFICATION_ACCEPTED", "VERIFICATION_REJECTED", "VERIFICATION_COMPLETE"].includes(detail?.stage ?? "");
-  const canBeAssigned = detail?.stage === "PENDING_ACCEPTANCE"; 
+  const canBeAssigned = detail?.stage === "PENDING_ACCEPTANCE";
+  const canAdvanceStage = !!ADVANCE_STAGE_MAP[detail?.stage ?? ""];
+  const nextStage = ADVANCE_STAGE_MAP[detail?.stage ?? ""] ?? "";
+
   // ── Assign handler ─────────────────────────────────────────────────────
-  const handleAssign = async () => {
-    if (!verificationId) return;
-    //  if (!detail?.property?.id) return;
-    setAssigning(true);
-    try {
-      await assignVerification(verificationId);
-      // Refetch to get updated reviewUser
+const handleAssign = async () => {
+  if (!verificationId) return;
+  setAssigning(true);
+  try {
+    await assignVerification(verificationId);
       const updated = await getVerificationById(verificationId);
       setDetail(updated.data);
     } catch (err: unknown) {
@@ -73,7 +79,14 @@ const VerificationDetailPage = () => {
   const handleVerdict = async (verdict: VerdictType, comments: string) => {
     if (!verificationId) return;
     await submitVerdict(verificationId, { verdict, comments });
-    // Refetch to reflect new stage
+    const updated = await getVerificationById(verificationId);
+    setDetail(updated.data);
+  };
+
+  // ── Advance stage handler ──────────────────────────────────────────────
+  const handleAdvanceStage = async (adminComments: string, verificationFiles: string[]) => {
+    if (!verificationId) return;
+    await advanceVerificationStage(verificationId, { adminComments, verificationFiles });
     const updated = await getVerificationById(verificationId);
     setDetail(updated.data);
   };
@@ -82,10 +95,10 @@ const VerificationDetailPage = () => {
     <div className="min-h-screen p-6" style={{ background: "#0f1117" }}>
 
       {/* Header */}
-      <div className="mb-6 flex items-center gap-3">
+      <div className="mb-6 flex items-center gap-3 flex-wrap">
         <button
           onClick={() => router.back()}
-          className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150"
+          className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150 flex-shrink-0"
           style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "#1e2535")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "#161b27")}
@@ -95,20 +108,20 @@ const VerificationDetailPage = () => {
           </svg>
         </button>
 
-        <div>
+        <div className="flex-1 min-w-0">
           <h1 className="text-2xl font-bold text-white tracking-tight">Verification Request</h1>
           {detail && !loading && (
             <p className="text-slate-500 text-xs mt-0.5">ID: {detail.id}</p>
           )}
         </div>
 
-        {/* Badge + Action buttons */}
+        {/* Action buttons */}
         {detail && !loading && (
-          <div className="ml-auto flex items-center gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
             <VerificationBadge stage={detail.stage} />
 
-            {/* Assign button — show if not yet assigned and not finalized */}
-            {!isAssigned && !isFinalized && (
+            {/* Assign to Me */}
+            {!isAssigned && !isFinalized && canBeAssigned && (
               <button
                 onClick={handleAssign}
                 disabled={assigning}
@@ -123,29 +136,17 @@ const VerificationDetailPage = () => {
                 onMouseLeave={(e) => !assigning && (e.currentTarget.style.background = "rgba(99,102,241,0.15)")}
               >
                 {assigning ? (
-                  <>
-                    <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 12a9 9 0 11-6.219-8.56" />
-                    </svg>
-                    Assigning...
-                  </>
+                  <><svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 11-6.219-8.56" /></svg>Assigning...</>
                 ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" />
-                    </svg>
-                    Assign to Me
-                  </>
+                  <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>Assign to Me</>
                 )}
               </button>
             )}
 
             {/* Assigned to someone else */}
-            {isAssigned && !isAssignedToMe && !isFinalized && canBeAssigned && (
-              <div
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm"
-                style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.25)" }}
-              >
+            {isAssigned && !isAssignedToMe && !isFinalized && (
+              <div className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm"
+                style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.25)" }}>
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" />
                 </svg>
@@ -153,8 +154,8 @@ const VerificationDetailPage = () => {
               </div>
             )}
 
-            {/* Submit verdict button — only if assigned to me and not finalized */}
-            {isAssignedToMe && !isFinalized && (
+            {/* Submit Verdict */}
+            {isAssignedToMe && !isFinalized && detail.stage === "IN_REVIEW" && (
               <button
                 onClick={() => setVerdictModalOpen(true)}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150"
@@ -168,6 +169,22 @@ const VerificationDetailPage = () => {
                 Submit Verdict
               </button>
             )}
+
+            {/* Advance Stage */}
+            {canAdvanceStage && (
+              <button
+                onClick={() => setAdvanceModalOpen(true)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150"
+                style={{ background: "rgba(251,146,60,0.12)", color: "#fb923c", border: "1px solid rgba(251,146,60,0.3)" }}
+                onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(251,146,60,0.22)")}
+                onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(251,146,60,0.12)")}
+              >
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+                Advance to {nextStage.replace(/_/g, " ")}
+              </button>
+            )}
           </div>
         )}
       </div>
@@ -179,14 +196,10 @@ const VerificationDetailPage = () => {
         <div className="rounded-xl px-6 py-16 text-center"
           style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}>
           <p className="text-red-400 text-sm">{error}</p>
-          <button onClick={() => router.back()} className="mt-3 text-xs text-slate-400 underline">
-            Go back
-          </button>
+          <button onClick={() => router.back()} className="mt-3 text-xs text-slate-400 underline">Go back</button>
         </div>
       ) : detail ? (
         <div className="space-y-4">
-
-          {/* Row 1: Property + Owner + Review Info */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <DetailCard title="Property Details">
               <DetailRow label="Name" value={detail.property?.name} />
@@ -221,7 +234,6 @@ const VerificationDetailPage = () => {
             </DetailCard>
           </div>
 
-          {/* Row 2: Documents + Stage timeline */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
             <div className="lg:col-span-2">
               <DetailCard title="Documents">
@@ -244,7 +256,6 @@ const VerificationDetailPage = () => {
                     )}
                   </div>
                 ))}
-
                 {detail.verificationFiles?.length > 0 && (
                   <div className="pt-2 border-t border-white/5">
                     <p className="text-xs text-slate-500 mb-2">Verification Files</p>
@@ -258,17 +269,23 @@ const VerificationDetailPage = () => {
                 )}
               </DetailCard>
             </div>
-
             <StageTimeline stageHistory={detail.stageHistory} currentStage={detail.stage} />
           </div>
         </div>
       ) : null}
 
-      {/* Verdict Modal */}
+      {/* Modals */}
       <VerdictModal
         isOpen={verdictModalOpen}
         onClose={() => setVerdictModalOpen(false)}
         onSubmit={handleVerdict}
+      />
+      <AdvanceStageModal
+        isOpen={advanceModalOpen}
+        currentStage={detail?.stage ?? ""}
+        nextStage={nextStage}
+        onClose={() => setAdvanceModalOpen(false)}
+        onSubmit={handleAdvanceStage}
       />
     </div>
   );

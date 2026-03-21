@@ -4,10 +4,12 @@ import { RequestStageBadge } from "./Requeststagebadge";
 
 
 
+
 import { useState } from "react";
 
+
 import { initializeVerificationPayment, getVerificationOrder } from "@/lib/api/payment";
-import { toastError } from "@/lib/toast/toast";
+import { toastError, toastSuccess } from "@/lib/toast/toast";
 
 interface RequestCardProps {
   item: MyRequestItem;
@@ -17,9 +19,7 @@ interface RequestCardProps {
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
+    day: "2-digit", month: "short", year: "numeric",
   });
 }
 
@@ -27,21 +27,16 @@ function MetaItem({ icon, label, value }: { icon: string; label: string; value: 
   return (
     <div className="flex items-center gap-1.5 min-w-0">
       <span className="text-xs shrink-0">{icon}</span>
-      <span className="text-slate-600 text-xs flex-shrink-0">{label}:</span>
+      <span className="text-slate-600 text-xs shrink-0">{label}:</span>
       <span className="text-slate-400 text-xs truncate">{value}</span>
     </div>
   );
 }
 
 const STAGE_ORDER = [
-  "INITIATED",
-  "PENDING_ACCEPTANCE",
-  "IN_REVIEW",
-  "VERIFICATION_ACCEPTED",
-  "VERIFICATION_REJECTED",
-  "PENDING_PAYMENT",
-  "PAYMENT_VERIFIED",
-  "VERIFICATION_COMPLETE",
+  "INITIATED", "PENDING_ACCEPTANCE", "IN_REVIEW",
+  "VERIFICATION_ACCEPTED", "VERIFICATION_REJECTED",
+  "PENDING_PAYMENT", "PAYMENT_VERIFIED", "VERIFICATION_COMPLETE",
 ];
 
 export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
@@ -61,18 +56,29 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
   const currentStageIdx = STAGE_ORDER.indexOf(item.stage);
   const progressSteps = STAGE_ORDER.slice(0, 4);
 
-  // ── Initialize payment (first time) ───────────────────────────────────
+  // ── Initialize payment with Paystack popup ─────────────────────────────
   const handleInitializePayment = async () => {
     setPaying(true);
     try {
       const res = await initializeVerificationPayment(item.id);
-      const authUrl = res.data?.paystackDetails?.authorization_url;
-      if (authUrl) {
-        window.location.href = authUrl;
-      } else {
-        console.log("Payment response data:", res.data);
-        toastError("Could not retrieve payment URL. Check console for details.");
+      const accessCode = res.data?.paystackDetails?.access_code;
+
+      if (!accessCode) {
+        toastError("Could not retrieve payment details.");
+        return;
       }
+
+      const PaystackPop = (await import("@paystack/inline-js")).default;
+      const popup = new PaystackPop();
+      popup.resumeTransaction(accessCode, {
+        onSuccess: async () => {
+          toastSuccess("Payment successful!");
+          onView(item.id); // Navigate to detail page to see updated stage
+        },
+        onCancel: () => {
+          toastError("Payment cancelled.");
+        },
+      });
     } catch (err: unknown) {
       toastError(err instanceof Error ? err.message : "Payment initialization failed");
     } finally {
@@ -80,25 +86,30 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
     }
   };
 
-  // ── Continue payment (already initialized) ────────────────────────────
+  // ── Continue payment ───────────────────────────────────────────────────
   const handleContinuePayment = async () => {
     setPaying(true);
     try {
       const res = await getVerificationOrder(item.id);
-      console.log("Order response:", res.data);
-      // We'll fix the URL extraction after seeing the console.log
-      const data = res.data as { paystackDetails?: { authorization_url?: string }; authorizationUrl?: string; authorization_url?: string };
-      const authUrl =
-        data?.paystackDetails?.authorization_url ||
-        data?.authorizationUrl ||
-        data?.authorization_url;
+      const data = res.data as { transactions?: { paystackReference?: string }[] };
+      const reference = data?.transactions?.[0]?.paystackReference;
 
-      if (authUrl) {
-        window.location.href = authUrl;
-      } else {
-        console.log("Continue payment response data:", res.data);
-        toastError("Could not retrieve payment URL. Check console for details.");
+      if (!reference) {
+        toastError("Payment reference not found. Please contact support.");
+        return;
       }
+
+      const PaystackPop = (await import("@paystack/inline-js")).default;
+      const popup = new PaystackPop();
+      popup.resumeTransaction(reference, {
+        onSuccess: async () => {
+          toastSuccess("Payment successful!");
+          onView(item.id);
+        },
+        onCancel: () => {
+          toastError("Payment cancelled.");
+        },
+      });
     } catch (err: unknown) {
       toastError(err instanceof Error ? err.message : "Failed to continue payment");
     } finally {
@@ -125,10 +136,8 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
       </div>
 
       {/* Meta grid */}
-      <div
-        className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-3 py-3 rounded-xl"
-        style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}
-      >
+      <div className="grid grid-cols-2 gap-x-4 gap-y-2.5 px-3 py-3 rounded-xl"
+        style={{ background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)" }}>
         <MetaItem icon="🏷️" label="Type" value={item.property.propertyType} />
         <MetaItem icon="📅" label="Created" value={formatDate(item.createdAt)} />
         <MetaItem icon="📄" label="Docs" value={`${docs} uploaded`} />
@@ -141,11 +150,8 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
           const stepIdx = STAGE_ORDER.indexOf(s);
           const isPast = currentStageIdx >= stepIdx;
           return (
-            <div
-              key={s}
-              className="flex-1 h-1 rounded-full transition-all duration-300"
-              style={{ background: isPast ? "#6366f1" : "rgba(255,255,255,0.06)" }}
-            />
+            <div key={s} className="flex-1 h-1 rounded-full transition-all duration-300"
+              style={{ background: isPast ? "#6366f1" : "rgba(255,255,255,0.06)" }} />
           );
         })}
       </div>
@@ -154,8 +160,7 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
       <div className="flex items-center gap-2 flex-wrap">
 
         {/* View Details */}
-        <button
-          onClick={() => onView(item.id)}
+        <button onClick={() => onView(item.id)}
           className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150"
           style={{ background: "rgba(99,102,241,0.1)", color: "#818cf8", border: "1px solid rgba(99,102,241,0.2)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(99,102,241,0.2)")}
@@ -167,10 +172,9 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
           View Details
         </button>
 
-        {/* Submit — only on INITIATED */}
+        {/* Submit */}
         {canSubmit && (
-          <button
-            onClick={() => onSubmit(item.id)}
+          <button onClick={() => onSubmit(item.id)}
             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150"
             style={{ background: "rgba(245,158,11,0.1)", color: "#f59e0b", border: "1px solid rgba(245,158,11,0.2)" }}
             onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(245,158,11,0.18)")}
@@ -183,11 +187,9 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
           </button>
         )}
 
-        {/* Proceed to Payment — only on VERIFICATION_ACCEPTED */}
+        {/* Pay Now */}
         {canPay && (
-          <button
-            onClick={handleInitializePayment}
-            disabled={paying}
+          <button onClick={handleInitializePayment} disabled={paying}
             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150"
             style={{
               background: paying ? "rgba(52,211,153,0.08)" : "rgba(52,211,153,0.12)",
@@ -206,11 +208,9 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
           </button>
         )}
 
-        {/* Continue Payment — only on PENDING_PAYMENT */}
+        {/* Continue Payment */}
         {canContinuePay && (
-          <button
-            onClick={handleContinuePayment}
-            disabled={paying}
+          <button onClick={handleContinuePayment} disabled={paying}
             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150"
             style={{
               background: paying ? "rgba(251,146,60,0.08)" : "rgba(251,146,60,0.12)",

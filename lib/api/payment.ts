@@ -51,6 +51,22 @@ export interface MyTransactionsResponse {
   status: number;
 }
 
+export interface MyOrdersResponse {
+  success: boolean;
+  message: string;
+  data: unknown;
+  description?: string;
+  status: number;
+}
+
+export interface OrderDetailResponse {
+  success: boolean;
+  message: string;
+  data: unknown;
+  description?: string;
+  status: number;
+}
+
 // ── API Functions ──────────────────────────────────────────────────────────
 
 export async function initializeVerificationPayment(
@@ -145,6 +161,35 @@ export async function getMyTransactions(): Promise<MyTransactionsResponse> {
 
   if (!res.ok || !data.success) {
     throw new Error(data.message || "Failed to fetch transactions");
+  }
+
+  return data;
+}
+
+
+
+export async function getOrderByVerificationId(
+  verificationId: string,
+): Promise<OrderDetailResponse> {
+  const { accessToken } = useAuthStore.getState();
+  if (!accessToken) throw new Error("User not authenticated");
+
+  const res = await authFetch(
+    `${BASE_URL}/payment/order/verification/${verificationId}`,
+    {
+      method: "GET",
+      headers: {
+        Accept: "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    },
+  );
+
+  const data: OrderDetailResponse = await res.json();
+  console.log("Order Detail Response:", data);
+
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || "Failed to fetch order details");
   }
 
   return data;

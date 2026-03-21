@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getUserVerificationById, submitVerification } from "@/lib/api/verification";
-import { initializeVerificationPayment } from "@/lib/api/payment";
+import { initializeVerificationPayment, getVerificationOrder } from "@/lib/api/payment";
 import { useAuthReady } from "@/hooks/useAuthReady";
 import { VerificationDetail } from "@/lib/types/verification";
 import { RequestStageBadge } from "@/app/components/myRequests";
@@ -18,11 +18,8 @@ import { toastError, toastSuccess } from "@/lib/toast/toast";
 
 function formatDate(iso: string) {
   return new Date(iso).toLocaleDateString("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
+    day: "2-digit", month: "short", year: "numeric",
+    hour: "2-digit", minute: "2-digit",
   });
 }
 
@@ -37,6 +34,12 @@ const UserVerificationDetailPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [paying, setPaying] = useState(false);
 
+  const refetchDetail = async () => {
+    if (!verificationId) return;
+    const updated = await getUserVerificationById(verificationId);
+    setDetail(updated.data);
+  };
+
   useEffect(() => {
     if (!isReady || !verificationId) return;
     setLoading(true);
@@ -46,10 +49,10 @@ const UserVerificationDetailPage = () => {
       .finally(() => setLoading(false));
   }, [isReady, verificationId]);
 
-  // ── Derived state ──────────────────────────────────────────────────────
   const canSubmit = detail?.stage === "INITIATED";
   const canUpdate = detail?.stage === "INITIATED";
   const canPay = detail?.stage === "VERIFICATION_ACCEPTED";
+  const canContinuePay = detail?.stage === "PENDING_PAYMENT";
 
   // ── Submit handler ─────────────────────────────────────────────────────
   const handleSubmitForReview = async () => {
@@ -58,8 +61,7 @@ const UserVerificationDetailPage = () => {
     try {
       await submitVerification(verificationId);
       toastSuccess("Submitted for review successfully!");
-      const updated = await getUserVerificationById(verificationId);
-      setDetail(updated.data);
+      await refetchDetail();
     } catch (err: unknown) {
       toastError(err instanceof Error ? err.message : "Failed to submit");
     } finally {
@@ -67,22 +69,64 @@ const UserVerificationDetailPage = () => {
     }
   };
 
-  // ── Payment handler ────────────────────────────────────────────────────
-  const handlePayment = async () => {
+  // ── Initialize payment with Paystack popup ─────────────────────────────
+  const handleInitializePayment = async () => {
     if (!verificationId) return;
     setPaying(true);
     try {
       const res = await initializeVerificationPayment(verificationId);
-         const authUrl = res.data?.paystackDetails?.authorization_url;
+      const accessCode = res.data?.paystackDetails?.access_code;
 
-      if (authUrl) {
-        window.location.href = authUrl;
-      } else {
-        console.log("Payment response data:", res.data);
-        toastError("Could not retrieve payment URL. Check console for details.");
+      if (!accessCode) {
+        toastError("Could not retrieve payment details.");
+        return;
       }
+
+      const PaystackPop = (await import("@paystack/inline-js")).default;
+      const popup = new PaystackPop();
+      popup.resumeTransaction(accessCode, {
+        onSuccess: async () => {
+          toastSuccess("Payment successful!");
+          await refetchDetail();
+        },
+        onCancel: () => {
+          toastError("Payment cancelled.");
+        },
+      });
     } catch (err: unknown) {
       toastError(err instanceof Error ? err.message : "Payment initialization failed");
+    } finally {
+      setPaying(false);
+    }
+  };
+
+  // ── Continue payment (already initialized) ─────────────────────────────
+  const handleContinuePayment = async () => {
+    if (!verificationId) return;
+    setPaying(true);
+    try {
+      const res = await getVerificationOrder(verificationId);
+      const data = res.data as { transactions?: { authorizationUrl?: string | null; paystackReference?: string }[] };
+      const reference = data?.transactions?.[0]?.paystackReference;
+
+      if (!reference) {
+        toastError("Payment reference not found. Please contact support.");
+        return;
+      }
+
+      const PaystackPop = (await import("@paystack/inline-js")).default;
+      const popup = new PaystackPop();
+      popup.resumeTransaction(reference, {
+        onSuccess: async () => {
+          toastSuccess("Payment successful!");
+          await refetchDetail();
+        },
+        onCancel: () => {
+          toastError("Payment cancelled.");
+        },
+      });
+    } catch (err: unknown) {
+      toastError(err instanceof Error ? err.message : "Failed to continue payment");
     } finally {
       setPaying(false);
     }
@@ -95,7 +139,7 @@ const UserVerificationDetailPage = () => {
       <div className="mb-6 flex items-center gap-3 flex-wrap">
         <button
           onClick={() => router.back()}
-          className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150 shrink-0"
+          className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150 flex-shrink-0"
           style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "#1e2535")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "#161b27")}
@@ -116,7 +160,6 @@ const UserVerificationDetailPage = () => {
           <div className="flex items-center gap-2 flex-wrap">
             <RequestStageBadge stage={detail.stage} />
 
-            {/* Update button */}
             {canUpdate && (
               <button
                 onClick={() => router.push(`/dashboard/my-requests/${verificationId}/update`)}
@@ -133,7 +176,6 @@ const UserVerificationDetailPage = () => {
               </button>
             )}
 
-            {/* Submit for review */}
             {canSubmit && (
               <button
                 onClick={handleSubmitForReview}
@@ -149,27 +191,17 @@ const UserVerificationDetailPage = () => {
                 onMouseLeave={(e) => !submitting && (e.currentTarget.style.background = "rgba(99,102,241,0.15)")}
               >
                 {submitting ? (
-                  <>
-                    <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 12a9 9 0 11-6.219-8.56" />
-                    </svg>
-                    Submitting...
-                  </>
+                  <><svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 11-6.219-8.56" /></svg>Submitting...</>
                 ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" />
-                    </svg>
-                    Submit for Review
-                  </>
+                  <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2L11 13M22 2L15 22l-4-9-9-4 20-7z" /></svg>Submit for Review</>
                 )}
               </button>
             )}
 
-            {/* Proceed to Payment — only on VERIFICATION_ACCEPTED */}
+            {/* Proceed to Payment */}
             {canPay && (
               <button
-                onClick={handlePayment}
+                onClick={handleInitializePayment}
                 disabled={paying}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150"
                 style={{
@@ -182,19 +214,32 @@ const UserVerificationDetailPage = () => {
                 onMouseLeave={(e) => !paying && (e.currentTarget.style.background = "rgba(52,211,153,0.15)")}
               >
                 {paying ? (
-                  <>
-                    <svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                      <path d="M21 12a9 9 0 11-6.219-8.56" />
-                    </svg>
-                    Processing...
-                  </>
+                  <><svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 11-6.219-8.56" /></svg>Processing...</>
                 ) : (
-                  <>
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" />
-                    </svg>
-                    Proceed to Payment
-                  </>
+                  <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>Proceed to Payment</>
+                )}
+              </button>
+            )}
+
+            {/* Continue Payment */}
+            {canContinuePay && (
+              <button
+                onClick={handleContinuePayment}
+                disabled={paying}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150"
+                style={{
+                  background: paying ? "rgba(251,146,60,0.08)" : "rgba(251,146,60,0.15)",
+                  color: paying ? "#c2410c" : "#fb923c",
+                  border: "1px solid rgba(251,146,60,0.3)",
+                  cursor: paying ? "not-allowed" : "pointer",
+                }}
+                onMouseEnter={(e) => !paying && (e.currentTarget.style.background = "rgba(251,146,60,0.25)")}
+                onMouseLeave={(e) => !paying && (e.currentTarget.style.background = "rgba(251,146,60,0.15)")}
+              >
+                {paying ? (
+                  <><svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 11-6.219-8.56" /></svg>Loading...</>
+                ) : (
+                  <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="1 4 1 10 7 10" /><path d="M3.51 15a9 9 0 1 0 .49-3.51" /></svg>Continue Payment</>
                 )}
               </button>
             )}
@@ -213,7 +258,6 @@ const UserVerificationDetailPage = () => {
         </div>
       ) : detail ? (
         <div className="space-y-4">
-
           <VerificationStatusBanner stage={detail.stage} adminComments={detail.adminComments} />
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
@@ -259,7 +303,6 @@ const UserVerificationDetailPage = () => {
               <VerificationDocumentRow label="Letter of Intent" value={detail.property?.letterOfIntent} />
               <VerificationDocumentRow label="Deed of Conveyance" value={detail.property?.deedOfConveyance} />
             </div>
-
             {detail.verificationFiles?.length > 0 && (
               <div className="pt-3 mt-1" style={{ borderTop: "1px solid rgba(255,255,255,0.05)" }}>
                 <p className="text-xs text-slate-500 mb-3">Verification Files</p>

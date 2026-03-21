@@ -121,7 +121,7 @@ const UserVerificationDetailPage = () => {
       <div className="mb-6 flex items-center gap-3 flex-wrap">
         <button
           onClick={() => router.back()}
-          className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150 flex-shrink-0"
+          className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150 shrink-0"
           style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "#1e2535")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "#161b27")}
