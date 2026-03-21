@@ -85,7 +85,7 @@ export default function DashboardHeader() {
             <span className="text-white font-black text-sm tracking-tighter">V</span>
           </div>
           <div>
-            <p className="text-white font-semibold text-sm leading-none tracking-wide">NexPanel</p>
+            <p className="text-white font-semibold text-sm leading-none tracking-wide">Verrify</p>
             <p className="text-gray-500 text-xs mt-0.5">
               {isAdmin ? "Admin Dashboard" : "Dashboard"}
             </p>
@@ -93,7 +93,7 @@ export default function DashboardHeader() {
         </div>
 
         {/* Search */}
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-gray-800/40 border-gray-700/50 hover:border-gray-600 w-48 cursor-pointer transition-all duration-200">
+        {/* <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-gray-800/40 border-gray-700/50 hover:border-gray-600 w-48 cursor-pointer transition-all duration-200">
           <Search size={13} className="text-gray-400 shrink-0" />
           <input
             className="bg-transparent text-gray-300 text-xs placeholder-gray-500 outline-none w-full"
@@ -102,7 +102,7 @@ export default function DashboardHeader() {
           <kbd className="text-gray-600 text-[10px] font-mono border border-gray-700 rounded px-1 py-0.5 shrink-0">
             ⌘K
           </kbd>
-        </div>
+        </div> */}
 
         {/* Right controls */}
         <div className="flex items-center gap-3">
@@ -112,7 +112,7 @@ export default function DashboardHeader() {
           </button>
           <div className="w-px h-5 bg-gray-700" />
           <button className="flex items-center gap-2 px-2 py-1 rounded-lg hover:bg-gray-800 transition-colors group">
-            <div className="w-6 h-6 rounded-full bg-gradient-to-br from-violet-500 to-pink-500 flex items-center justify-center">
+            <div className="w-6 h-6 rounded-full bg-linear-to-br from-violet-500 to-pink-500 flex items-center justify-center">
               <span className="text-white text-[10px] font-bold">{initials}</span>
             </div>
             <span className="text-gray-300 text-xs font-medium group-hover:text-white transition-colors">
