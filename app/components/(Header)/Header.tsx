@@ -51,15 +51,15 @@ export default function DashboardHeader() {
     },
 
     // Contact — all roles
-    {
-      id: "contact",
-      label: "Contact",
-      href: "/dashboard/contact",
-      icon: MessageCircle,
-      badge: 3 as number | null,
-      color: "text-emerald-400",
-      activeBg: "bg-emerald-500/10 border-emerald-500/30",
-    },
+    // {
+    //   id: "contact",
+    //   label: "Contact",
+    //   href: "/dashboard/contact",
+    //   icon: MessageCircle,
+    //   badge: 3 as number | null,
+    //   color: "text-emerald-400",
+    //   activeBg: "bg-emerald-500/10 border-emerald-500/30",
+    // },
 
     // Settings — all roles
     {

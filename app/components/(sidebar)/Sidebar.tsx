@@ -84,12 +84,12 @@ export const sidebarLinks = [
     icon: ShieldCheck,
     roles: ["USER"],
   },
-  {
-    label: "Settings",
-    href: "/dashboard/settings",
-    icon: Settings,
-    roles: ["USER", "SUPER_ADMIN"],
-  },
+  // {
+  //   label: "Settings",
+  //   href: "/dashboard/settings",
+  //   icon: Settings,
+  //   roles: ["USER", "SUPER_ADMIN"],
+  // },
 ];
 
 // this component is declared at module scope rather than inside Sidebar so

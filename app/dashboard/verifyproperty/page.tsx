@@ -6,6 +6,7 @@ import StepTwo from "@/app/components/(FormComponents)/(VerifyProperty)/StepTwo"
 import VerificationMap from "@/app/components/(FormComponents)/(VerifyProperty)/VerificationMap";
 import { useVerificationStore } from "@/store/useVerificationStore";
 import { toastError, toastSuccess } from "@/lib/toast/toast";
+import { useAuthReady } from "@/hooks/useAuthReady";
 
 const STEPS = [
   {
@@ -41,6 +42,7 @@ const STEPS = [
 ];
 
 export default function InitiateVerificationPage() {
+  const { isReady } = useAuthReady();
   const router = useRouter();
   const { draft, submitVerification, loading } = useVerificationStore();
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -114,7 +116,7 @@ export default function InitiateVerificationPage() {
             const isActive = step === s.number;
             return (
               <div key={s.number} className="flex items-center gap-2 flex-1">
-                <div className="flex items-center gap-3 flex-1">
+                <div className="flex flex-col justify-center items-center gap-3 flex-1">
                   {/* Circle */}
                   <div
                     className="w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300"
@@ -142,19 +144,19 @@ export default function InitiateVerificationPage() {
                   {/* Label */}
                   <div className="hidden sm:block">
                     <p
-                      className="text-xs font-semibold"
+                      className="text-xs font-semibold text-center"
                       style={{ color: isActive ? "#c7d2fe" : isCompleted ? "#34d399" : "#475569" }}
                     >
                       {s.title}
                     </p>
-                    <p className="text-xs text-slate-600">{s.description}</p>
+                    <p className="text-xs text-center text-slate-600">{s.description}</p>
                   </div>
                 </div>
 
                 {/* Connector */}
                 {i < STEPS.length - 1 && (
                   <div
-                    className="h-px flex-1 mx-2 transition-all duration-300"
+                    className="h-[5px] flex-1 mx-6 transition-all duration-300"
                     style={{ background: step > s.number ? "rgba(52,211,153,0.3)" : "rgba(255,255,255,0.06)" }}
                   />
                 )}
@@ -221,7 +223,8 @@ export default function InitiateVerificationPage() {
           ) : (
             <button
               onClick={handleSubmit}
-              disabled={loading}
+              // disabled={loading}
+                disabled={loading || !isReady}
               className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150"
               style={{
                 background: loading ? "rgba(99,102,241,0.1)" : "rgba(99,102,241,0.15)",
