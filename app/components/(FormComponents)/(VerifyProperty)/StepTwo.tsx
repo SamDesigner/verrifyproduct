@@ -2,9 +2,9 @@ import FileUpload from "@/app/components/(FormComponents)/FileUpload";
 import { useVerificationStore } from "@/store/useVerificationStore";
 
 const documents = [
-  { fileType: "CERTIFICATE_OF_OCCUPANCY", label: "Certificate of Occupancy", description: "Official document confirming legal ownership" },
-  { fileType: "CONTRACT_OF_SALE",         label: "Contract of Sale",          description: "Signed agreement between buyer and seller" },
-  { fileType: "SURVEY_PLAN",              label: "Survey Plan",               description: "Technical drawing of the property boundaries" },
+  { fileType: "VERIFICATION_DOCUMENT", label: "Certificate of Occupancy", description: "Official document confirming legal ownership" },
+  { fileType: "VERIFICATION_DOCUMENT",         label: "Contract of Sale",          description: "Signed agreement between buyer and seller" },
+  { fileType: "VERIFICATION_DOCUMENT",              label: "Survey Plan",               description: "Technical drawing of the property boundaries" },
 ];
 
 export default function StepTwo() {
@@ -16,9 +16,9 @@ export default function StepTwo() {
         Upload the required property documents. All files must be clear and legible.
       </p>
 
-      {documents.map(({ fileType, label, description }) => (
+      {documents.map(({ fileType, label, description },index) => (
         <div
-          key={fileType}
+          key={index}
           className="rounded-xl p-4 flex flex-col gap-3"
           style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.07)" }}
         >
@@ -27,7 +27,7 @@ export default function StepTwo() {
             <p className="text-xs text-slate-500 mt-0.5">{description}</p>
           </div>
           <FileUpload
-            fileType={fileType}
+            fileType={fileType} 
             label={label}
             onUploadSuccess={(data) => addVerificationFile(data.url)}
           />

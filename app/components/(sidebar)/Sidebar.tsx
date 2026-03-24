@@ -10,7 +10,7 @@ import {
   Building2,
   Warehouse,
   Map,
-  Settings,
+  // Settings,
   ShieldCheck,
   X,
 } from "lucide-react";
@@ -24,48 +24,43 @@ export const sidebarLinks = [
     icon: LayoutDashboard,
     roles: ["USER", "SUPER_ADMIN"],
   },
-  {
-    label: "Property",
-    href: "/dashboard/properties",
-    icon: Home,
-    roles: ["USER"],
-  },
+  // {
+  //   label: "Property",
+  //   href: "/dashboard/properties",
+  //   icon: Home,
+  //   roles: ["USER"],
+  // },
   {
     label: "Verify Property",
     href: "/dashboard/verifyproperty",
     icon: BadgeCheck,
     roles: ["USER"],
   },
-  {
-    label: "Profile",
-    href: "/dashboard/profile",
-    icon: User,
-    roles: ["USER", "SUPER_ADMIN"],
-  },
+
   {
     label: "Company Profiles",
     href: "/dashboard/admin/company-profiles",
     icon: Building2,
     roles: ["SUPER_ADMIN"],
   },
-  {
-    label: "Company Properties",
-    href: "/dashboard/companyproperties",
-    icon: Building2,
-    roles: ["USER"],
-  },
+  // {
+  //   label: "Company Properties",
+  //   href: "/dashboard/companyproperties",
+  //   icon: Building2,
+  //   roles: ["USER"],
+  // },
   // {
   //   label: "User Management",
   //   href: "/dashboard/admin/user-management",
   //   icon: Warehouse,
   //   roles: ["SUPER_ADMIN"],
   // },
-  {
-    label: "Map",
-    href: "/dashboard/admin/view-map",
-    icon: Map,
-    roles: ["USER", "SUPER_ADMIN"],
-  },
+  // {
+  //   label: "Map",
+  //   href: "/dashboard/admin/view-map",
+  //   icon: Map,
+  //   roles: ["USER", "SUPER_ADMIN"],
+  // },
   {
     label: "Property Management",
     href: "/dashboard/admin/property-management",
@@ -83,6 +78,12 @@ export const sidebarLinks = [
     href: "/dashboard/my-requests",
     icon: ShieldCheck,
     roles: ["USER"],
+  },
+  {
+    label: "Profile",
+    href: "/dashboard/profile",
+    icon: User,
+    roles: ["USER", "SUPER_ADMIN"],
   },
   // {
   //   label: "Settings",

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { getMyTransactions } from "@/lib/api/payment";
 import { useAuthReady } from "@/hooks/useAuthReady";
 
+
 // ── Types ──────────────────────────────────────────────────────────────────
 
 interface TransactionOrder {
@@ -37,6 +38,7 @@ function formatDate(iso: string) {
 }
 
 function StatusBadge({ status }: { status: string }) {
+  
   const isSuccess = status === "SUCCESS";
   const isPending = status === "PENDING";
   const color = isSuccess ? "#34d399" : isPending ? "#f59e0b" : "#f87171";
@@ -84,7 +86,6 @@ export default function TransactionsPage() {
 
   useEffect(() => {
     if (!isReady) return;
-    setLoading(true);
     getMyTransactions()
       .then((res) => {
         const data = res.data as { data?: Transaction[] } | Transaction[];
@@ -95,7 +96,8 @@ export default function TransactionsPage() {
   }, [isReady]);
 
   return (
-    <div className="min-h-screen p-6" style={{ background: "#0f1117" }}>
+    // style={{ background: "#0f1117" }}
+    <div className="min-h-screen p-6 bg-gray-900 rounded-xl" >
 
       {/* Header */}
       <div className="mb-6">
@@ -132,7 +134,7 @@ export default function TransactionsPage() {
               bg: "rgba(245,158,11,0.08)",
               border: "rgba(245,158,11,0.2)",
             },
-          ].map(({ label, value, color, bg, border }) => (
+          ].map(({ label, value, color }) => (
             <div
               key={label}
               className="rounded-2xl px-5 py-4 flex items-center justify-between"

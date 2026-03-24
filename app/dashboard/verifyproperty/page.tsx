@@ -96,7 +96,8 @@ export default function InitiateVerificationPage() {
   };
 
   return (
-    <div className="min-h-screen p-6" style={{ background: "#0f1117" }}>
+    // style={{ background: "#0f1117" }}
+    <div className="min-h-screen p-6 bg-gray-900 rounded-xl" >
       <div className="max-w-3xl mx-auto flex flex-col gap-8">
 
         {/* Header */}
