@@ -1,29 +1,3 @@
-
-// "use client";
-
-// import { useParams, useRouter } from "next/navigation";
-
-// export default function SuccessPage() {
-//   const { verificationId } = useParams();
-//   const router = useRouter();
-
-//   return (
-//     <div className="min-h-screen flex items-center justify-center bg-gray-900">
-//       <div className="bg-gray-800 p-8 rounded-xl text-center max-w-md">
-//         <h1 className="text-green-500 text-2xl font-semibold mb-4">
-//           Verification Initiated Successfully!
-//         </h1>
-
-//         <button
-//           onClick={() => router.push(`/checkout/${verificationId}`)}
-//           className="bg-blue-600 text-white px-6 py-3 rounded-lg cursor-pointer"
-//         >
-//           Proceed to Checkout
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
 "use client";
 import { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
@@ -52,7 +26,8 @@ export default function VerificationSuccessPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6" style={{ background: "#0f1117" }}>
+    //  style={{ background: "#0f1117" }}
+    <div className="min-h-screen flex items-center justify-center p-6 bg-gray-900 rounded-xl">
       <div className="max-w-md w-full text-center flex flex-col items-center gap-6">
 
         {/* Success icon */}
@@ -117,7 +92,7 @@ export default function VerificationSuccessPage() {
           <button
             onClick={handleSubmitForReview}
             disabled={submitting}
-            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all duration-150"
+            className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer"
             style={{
               background: submitting ? "rgba(99,102,241,0.1)" : "rgba(99,102,241,0.15)",
               color: submitting ? "#4338ca" : "#818cf8",
@@ -146,9 +121,9 @@ export default function VerificationSuccessPage() {
 
           <button
             onClick={() => router.push("/dashboard")}
-            className="w-full py-3 rounded-xl text-sm font-semibold transition-all duration-150"
+            className="w-full py-3 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer"
             style={{
-              background: "transparent",
+              // background: "transparent",
               color: "#475569",
               border: "1px solid rgba(255,255,255,0.06)",
             }}

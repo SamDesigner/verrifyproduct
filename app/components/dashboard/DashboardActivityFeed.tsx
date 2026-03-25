@@ -40,7 +40,11 @@ export function DashboardActivityFeed({ feed, loading }: DashboardActivityFeedPr
       <p className="text-white font-semibold text-sm">Recent Activity</p>
       <div
         className="rounded-2xl p-4"
-        style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+        // style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+        style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+
+      // style={{ background: "rgba(99,102,241,0.15)", color: "#818cf8", border: "1px solid rgba(99,102,241,0.3)" }}
+
       >
         {loading ? (
           <div className="space-y-1">
