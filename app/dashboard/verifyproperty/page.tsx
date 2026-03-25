@@ -125,13 +125,13 @@ export default function InitiateVerificationPage() {
                       background: isCompleted
                         ? "rgba(52,211,153,0.15)"
                         : isActive
-                        ? "rgba(99,102,241,0.2)"
-                        : "rgba(255,255,255,0.04)",
+                          ? "rgba(99,102,241,0.2)"
+                          : "rgba(255,255,255,0.04)",
                       border: isCompleted
                         ? "1px solid rgba(52,211,153,0.4)"
                         : isActive
-                        ? "1px solid rgba(99,102,241,0.5)"
-                        : "1px solid rgba(255,255,255,0.08)",
+                          ? "1px solid rgba(99,102,241,0.5)"
+                          : "1px solid rgba(255,255,255,0.08)",
                       color: isCompleted ? "#34d399" : isActive ? "#818cf8" : "#475569",
                     }}
                   >
@@ -169,7 +169,9 @@ export default function InitiateVerificationPage() {
         {/* Step content */}
         <div
           className="rounded-2xl p-6"
-          style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+          // style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+          style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+
         >
           {/* Step header */}
           <div className="mb-6 pb-4" style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
@@ -186,7 +188,7 @@ export default function InitiateVerificationPage() {
           <button
             onClick={handlePrevious}
             disabled={step === 1}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer"
             style={{
               background: step === 1 ? "transparent" : "rgba(255,255,255,0.04)",
               color: step === 1 ? "#1e293b" : "#94a3b8",
@@ -207,7 +209,7 @@ export default function InitiateVerificationPage() {
           {step < 3 ? (
             <button
               onClick={handleNext}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer"
               style={{
                 background: "rgba(99,102,241,0.15)",
                 color: "#818cf8",
@@ -225,8 +227,9 @@ export default function InitiateVerificationPage() {
             <button
               onClick={handleSubmit}
               // disabled={loading}
-                disabled={loading || !isReady}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150"
+              disabled={loading || !isReady}
+
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 cursor-pointer"
               style={{
                 background: loading ? "rgba(99,102,241,0.1)" : "rgba(99,102,241,0.15)",
                 color: loading ? "#4338ca" : "#818cf8",

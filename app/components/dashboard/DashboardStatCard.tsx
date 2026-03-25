@@ -16,7 +16,8 @@ export function DashboardStatCard({
   return (
     <div
       className="rounded-2xl p-4 flex flex-row items-stretch gap-0 overflow-hidden relative"
-      style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+      // style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
     >
       {/* Left accent bar */}
       <div

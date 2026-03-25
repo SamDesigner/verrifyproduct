@@ -16,7 +16,8 @@ function PipelineCard({ item, onView }: { item: MyRequestItem; onView: (id: stri
   return (
     <div
       className="rounded-2xl p-5 flex flex-col gap-4 cursor-pointer transition-all duration-150"
-      style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+      // style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+            style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
       onClick={() => onView(item.id)}
       onMouseEnter={(e) => (e.currentTarget.style.border = "1px solid rgba(99,102,241,0.3)")}
       onMouseLeave={(e) => (e.currentTarget.style.border = "1px solid rgba(255,255,255,0.07)")}

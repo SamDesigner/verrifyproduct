@@ -106,7 +106,7 @@ export default function DashboardHeader() {
 
         {/* Right controls */}
         <div className="flex items-center gap-3">
-          <button className="relative p-1.5 rounded-lg hover:bg-gray-800 transition-colors group">
+          <button onClick={() => router.push('/dashboard/notification')} className="relative p-1.5 rounded-lg cursor-pointer hover:bg-gray-800 transition-colors group">
             <Bell size={16} className="text-gray-400 group-hover:text-gray-200 transition-colors" />
             <span className="absolute top-0.5 right-0.5 w-2 h-2 bg-red-500 rounded-full border border-gray-900" />
           </button>

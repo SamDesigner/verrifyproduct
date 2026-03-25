@@ -56,7 +56,8 @@ const MyVerificationRequestsPage = () => {
 };
 
   return (
-    <div className="min-h-screen p-6" style={{ background: "#0f1117" }}>
+    // style={{ background: "#0f1117" }}
+    <div className="min-h-screen p-6 bg-gray-900 rounded-xl" >
       <div className="max-w-5xl mx-auto flex flex-col gap-6">
 
         {/* Header */}
@@ -73,8 +74,8 @@ const MyVerificationRequestsPage = () => {
           </div>
 
           <button
-            onClick={() => router.push("/dashboard/verifyproperty/initiate")}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 shrink-0"
+            onClick={() => router.push("/dashboard/verifyproperty")}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 shrink-0 cursor-pointer"
             style={{
               background: "rgba(99,102,241,0.15)",
               color: "#818cf8",
