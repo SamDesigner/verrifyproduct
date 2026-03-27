@@ -6,9 +6,9 @@ import {
   ShoppingCart,
   ArrowLeftRight,
   Settings,
-  MessageCircle,
+  // MessageCircle,
   Bell,
-  Search,
+  // Search,
   ChevronDown,
 } from "lucide-react";
 

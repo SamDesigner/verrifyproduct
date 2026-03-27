@@ -73,7 +73,7 @@ export interface VerificationItem {
   user: VerificationUser;
   property: VerificationProperty;
   verificationFiles: string[];
-  stageHistory: unknown[];
+  stageHistory: StageHistory[];
 }
 export interface VerificationDetail {
   id: string;

@@ -92,7 +92,8 @@ const handleAssign = async () => {
   };
 
   return (
-    <div className="min-h-screen p-6" style={{ background: "#0f1117" }}>
+    // style={{ background: "#0f1117" }}
+    <div className="min-h-screen p-6 bg-gray-900 rounded-xl" >
 
       {/* Header */}
       <div className="mb-6 flex items-center gap-3 flex-wrap">

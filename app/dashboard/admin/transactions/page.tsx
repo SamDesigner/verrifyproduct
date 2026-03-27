@@ -23,7 +23,8 @@ export default function AdminTransactionsPage() {
   }, [isReady]);
 
   return (
-    <div className="min-h-screen p-6" style={{ background: "#0f1117" }}>
+    // style={{ background: "#0f1117" }}
+    <div className="min-h-screen p-6 bg-gray-900 rounded-xl" >
 
       {/* Header */}
       <div className="mb-6">
@@ -105,7 +106,7 @@ export default function AdminTransactionsPage() {
 
             return (
               <div key={String(tx.id ?? i)}
-                className="px-6 py-4 grid items-center gap-4 hover:bg-white/[0.02] transition-colors"
+                className="px-6 py-4 grid items-center gap-4 hover:bg-white/2 transition-colors"
                 style={{ gridTemplateColumns: "160px 1fr 1fr 140px 180px 100px", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                 <span className="text-slate-300 text-xs font-mono truncate">
                   {String(tx.paystackReference ?? tx.reference ?? "—")}

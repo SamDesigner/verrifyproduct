@@ -4,12 +4,12 @@
 import Link from "next/link";
 import {
   LayoutDashboard,
-  Home,
+  // Home,
   BadgeCheck,
   User,
-  Building2,
-  Warehouse,
-  Map,
+  // Building2,
+  // Warehouse,
+  // Map,
   // Settings,
   ShieldCheck,
   X,
@@ -22,7 +22,13 @@ export const sidebarLinks = [
     label: "Dashboard",
     href: "/dashboard",
     icon: LayoutDashboard,
-    roles: ["USER", "SUPER_ADMIN"],
+    roles: ["USER"],
+  },
+  {
+    label: "Dashboard",
+    href: "/dashboard/admin",
+    icon: LayoutDashboard,
+    roles: ["SUPER_ADMIN"],
   },
   // {
   //   label: "Property",
@@ -37,12 +43,12 @@ export const sidebarLinks = [
     roles: ["USER"],
   },
 
-  {
-    label: "Company Profiles",
-    href: "/dashboard/admin/company-profiles",
-    icon: Building2,
-    roles: ["SUPER_ADMIN"],
-  },
+  // {
+  //   label: "Company Profiles",
+  //   href: "/dashboard/admin/company-profiles",
+  //   icon: Building2,
+  //   roles: ["SUPER_ADMIN"],
+  // },
   // {
   //   label: "Company Properties",
   //   href: "/dashboard/companyproperties",
@@ -61,12 +67,12 @@ export const sidebarLinks = [
   //   icon: Map,
   //   roles: ["USER", "SUPER_ADMIN"],
   // },
-  {
-    label: "Property Management",
-    href: "/dashboard/admin/property-management",
-    icon: Warehouse,
-    roles: ["SUPER_ADMIN"],
-  },
+  // {
+  //   label: "Property Management",
+  //   href: "/dashboard/admin/property-management",
+  //   icon: Warehouse,
+  //   roles: ["SUPER_ADMIN"],
+  // },
   {
     label: "Verification Requests",
     href: "/dashboard/admin/verification-request",
@@ -85,6 +91,12 @@ export const sidebarLinks = [
     icon: User,
     roles: ["USER", "SUPER_ADMIN"],
   },
+  // {
+  //   label: "Profile",
+  //   href: "/dashboard/admin/profile",
+  //   icon: User,
+  //   roles: ["SUPER_ADMIN"],
+  // },
   // {
   //   label: "Settings",
   //   href: "/dashboard/settings",
@@ -110,8 +122,8 @@ const NavLinks: React.FC<NavLinksProps> = ({ filteredLinks, onClickLink }) => {
       {filteredLinks.map((link) => {
         const Icon = link.icon;
         const isActive =
-          link.href === "/dashboard"
-            ? pathname === "/dashboard"
+          link.href === "/dashboard" || link.href === "/dashboard/admin"
+            ? pathname === "/dashboard" || pathname === "/dashboard/admin"
             : pathname === link.href ||
             pathname.startsWith(`${link.href}/`);
 

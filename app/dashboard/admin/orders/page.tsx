@@ -57,7 +57,8 @@ export default function AdminOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen p-6" style={{ background: "#0f1117" }}>
+    // style={{ background: "#0f1117" }}
+    <div className="min-h-screen p-6 bg-gray-900 rounded-xl" >
 
       {/* Header */}
       <div className="mb-6 flex items-start justify-between gap-4">
@@ -91,7 +92,7 @@ export default function AdminOrdersPage() {
               {/* User info banner above each card */}
               <div className="flex items-center gap-2 px-1">
                 <div
-                  className="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-xs font-bold"
+                  className="w-5 h-5 rounded-full flex items-center justify-center shrink-0 text-xs font-bold"
                   style={{ background: "rgba(99,102,241,0.15)", color: "#818cf8" }}
                 >
                   {order.user.firstName?.[0]?.toUpperCase() ?? "?"}
