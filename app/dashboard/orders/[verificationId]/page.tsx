@@ -55,7 +55,7 @@ function formatDate(iso: string) {
 function DetailRow({ label, value }: { label: string; value?: string | number | null }) {
   return (
     <div className="flex items-start justify-between gap-4">
-      <span className="text-slate-500 text-xs flex-shrink-0">{label}</span>
+      <span className="text-slate-500 text-xs shrink-0">{label}</span>
       <span className="text-slate-300 text-xs font-medium text-right break-all">{value ?? "—"}</span>
     </div>
   );
@@ -65,7 +65,9 @@ function SectionCard({ title, children }: { title: string; children: React.React
   return (
     <div
       className="rounded-2xl p-5 flex flex-col gap-4"
-      style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+      // style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+      style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+
     >
       <p
         className="text-xs font-semibold uppercase tracking-widest text-slate-500 pb-3"
@@ -138,13 +140,13 @@ export default function OrderDetailPage() {
   }, [isReady, verificationId]);
 
   return (
-    <div className="min-h-screen p-6" style={{ background: "#0f1117" }}>
+    <div className="min-h-screen p-6 bg-gray-900 rounded-xl" >
 
       {/* Header */}
       <div className="mb-6 flex items-center gap-3">
         <button
           onClick={() => router.back()}
-          className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150 flex-shrink-0"
+          className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150 shrink-0 cursor-pointer"
           style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "#1e2535")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "#161b27")}
@@ -203,9 +205,12 @@ export default function OrderDetailPage() {
 
           {/* Transactions table */}
           {order.transactions && order.transactions.length > 0 && (
-            <div className="rounded-2xl overflow-hidden"
-              style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}>
-              <div className="px-5 py-3 text-xs font-semibold uppercase tracking-widest"
+            <div className="rounded-2xl overflow-x-auto md:overflow-hidden "
+              // style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
+              style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.06)" }}
+
+            >
+              <div className="px-5 py-3 text-xs font-semibold uppercase tracking-widest w-full!"
                 style={{ color: "#475569", background: "#12161f", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
                 Transactions
               </div>
@@ -223,7 +228,7 @@ export default function OrderDetailPage() {
                 const bg = isSuccess ? "rgba(52,211,153,0.1)" : isPending ? "rgba(245,158,11,0.1)" : "rgba(248,113,113,0.1)";
                 const border = isSuccess ? "rgba(52,211,153,0.2)" : isPending ? "rgba(245,158,11,0.2)" : "rgba(248,113,113,0.2)";
                 return (
-                  <div key={tx.id} className="grid items-center px-5 py-3 hover:bg-white/[0.02]"
+                  <div key={tx.id} className="grid items-center px-5 py-3 hover:bg-white/2 "
                     style={{ gridTemplateColumns: "1fr 140px 180px 100px", borderBottom: "1px solid rgba(255,255,255,0.04)" }}>
                     <span className="text-slate-300 text-xs font-mono truncate">{tx.paystackReference ?? "—"}</span>
                     <span className="text-white text-xs font-semibold">₦{Number(tx.amount).toLocaleString()}</span>

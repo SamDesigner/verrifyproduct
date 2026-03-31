@@ -4,11 +4,11 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "@/app/components/(sidebar)/Sidebar";
 import { initializeUser, useAuthStore } from "@/store/useAuthStore";
-import { FaBarsStaggered } from "react-icons/fa6";
-import Link from "next/link";
+// import { FaBarsStaggered } from "react-icons/fa6";
+// import Link from "next/link";
 import Logo from '@/public/images/Logo.png';
 import Header from "@/app/components/(Header)/Header";
-import authLogo from '@/public/images/authLogo.png';
+// import authLogo from '@/public/images/authLogo.png';
 
 export default function DashboardShell({
     children,
@@ -75,11 +75,11 @@ export default function DashboardShell({
                         onClick={() => setOpen(false)}
                     />
                 )}
-
+                
                 <Sidebar open={open} setOpen={setOpen} />
 
                 <main className="flex-1 overflow-auto p-2 md:p-6 bg-gray-800  pb-[200px]!">
-                    <div className="flex md:hidden justify-between px-2">
+                    {/* <div className="flex md:hidden justify-between px-2">
                         <div>
                             <Link href='/dashboard'>
                                 <Image alt="Logo" src={authLogo} />
@@ -91,7 +91,7 @@ export default function DashboardShell({
                         >
                             <FaBarsStaggered size={22} />
                         </button>
-                    </div>
+                    </div> */}
                     {children}
                 </main>
 

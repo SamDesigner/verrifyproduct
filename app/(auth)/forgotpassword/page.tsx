@@ -1,6 +1,6 @@
 "use client";
 import Button from "@/app/components/(FormComponents)/Button";
-import Link from "next/link";
+// import Link from "next/link";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
@@ -11,6 +11,7 @@ import {
   ForgotPasswordForm,
 } from "@/lib/validation/forgotPasswardSchema";
 import { forgotPassword } from "@/lib/api/auth";
+
 const Page = () => {
   const router = useRouter();
   const {
@@ -35,20 +36,20 @@ const Page = () => {
   };
 
   return (
-    <div>
-      <div className="flex flex-col gap-5">
+    <div className="w-full md:w-3/4">
+      <div className="flex flex-col gap-5 items-center md:items-start">
         <div className="flex  justify-center items-center ">
           <Image src={authLogo} alt="Logo" />
         </div>
 
-        <h2 className="text-xl text-gray-100 font-bold  text-center text-[40px]">
+        <h2 className="text-3xl font-bold text-slate-100 tracking-tight mb-1.5">
           Forgot Password
         </h2>
-        <p className="text-gray-100 text-center">
-          Forgotten Password? Don&apos;t Panic, we&apos;ve got you.
+        <p className="text-sm text-slate-500 mb-8 leading-relaxed">
+          Input your email to get a reset link.
         </p>
       </div>
-      <div className="mt-[10vh] flex flex-col gap-5">
+      <div className=" flex flex-col gap-5">
         {/* <h3 className="text-[23px] font-semibold text-gray-100">
           Enter Email Address
         </h3> */}
@@ -72,12 +73,12 @@ const Page = () => {
             />
           </div>
 
-          <div className="flex items-center justify-center gap-2 text-gray-300">
+          {/* <div className="flex items-center justify-center gap-2 text-gray-300">
             <p>Don&apos;t have an account?</p>
             <Link href="/signup" className="underline font-semibold">
-              Sign up 
+              Sign up
             </Link>
-          </div>
+          </div> */}
         </form>
       </div>
     </div>

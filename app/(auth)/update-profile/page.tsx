@@ -3,13 +3,13 @@
 import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
+// import Image from "next/image";
 import { updateUser } from "@/lib/api/user";
 import { toastError } from "@/lib/toast/toast";
 import { useAuthStore } from "@/store/useAuthStore";
 import Button from "@/app/components/(FormComponents)/Button";
 import FileUpload from "@/app/components/(FormComponents)/FileUpload";
-import authLogo from "@/public/images/authLogo.png";
+// import authLogo from "@/public/images/authLogo.png";
 import { FileUploadResponse } from "@/lib/api/file";
 interface CompleteProfileFormData {
   firstName: string;
@@ -82,17 +82,20 @@ export default function CompleteProfilePage() {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-5 md:mt-10">
+    <div className="max-w-xl mx-auto mt-[55vh]">
       <div className="flex flex-col gap-2">
-        <div className="flex justify-center mf items-center ">
-          <Image src={authLogo} alt="Logo" />
+        <div className="mt-[50px]">
+          <h2 className="text-3xl font-bold text-slate-100 tracking-tight mb-1.5">
+            Update Profile
+          </h2>
+          <p className="text-sm text-slate-500 mb-8 leading-relaxed">
+           Edit the details to update your profile Information
+          </p>
         </div>
-        <h2 className="text-2xl font-bold text-center text-gray-100">
-          Update Profile
-        </h2>
+
       </div>
       <form
-        className="flex flex-col gap-4 mt-5"
+        className="flex flex-col gap-4 "
         onSubmit={handleSubmit(onSubmit)}
       >
         {/* First & Last Name */}

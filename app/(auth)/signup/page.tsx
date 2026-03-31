@@ -37,30 +37,29 @@ const Page = () => {
   };
 
   return (
-    <div className="">
+    <div className=" w-full mt-[280px] md:mt-[180px]">
       <div className="flex flex-col items-center ">
-        <div className="flex flex-col gap-5">
-       
-          <h2 className="text-xl text-gray-100 font-bold  text-center text-[30px] md:text-[40px]">
-            Join <span className="text-purple-300">Verrify</span> where trust
-            meets opportunity
+        <div className="flex flex-col items-center md:items-start w-full">
+          <Image className="md:hidden" src={authLogo} alt="Verrify Logo" />
+          <h2 className="text-3xl font-bold text-slate-100 tracking-tight mb-1.5">
+            Welcome back
           </h2>
-          <p className="text-gray-100 text-center">
-            Sign in to continue exploring verified land and home.
+          <p className="text-sm text-slate-500 mb-8 leading-relaxed">
+            Sign up to own a Verrify account today.
           </p>
         </div>
 
         {/* Signup Form Starts Here */}
-        <div className="mt-5  w-full">
+        <div className=" w-full  ">
           <form
-            className="flex flex-col gap-5"
+            className="flex flex-col gap-3"
             onSubmit={handleSubmit(onSubmit)}
           >
-            <div className="flex flex-col md:flex-row gap-5 md:gap-10 ">
+            <div className="flex flex-col md:flex-row gap-5 md:gap-2 w-full! ">
               <div className="flex flex-col gap-2 flex-1">
                 <label className="text-gray-200">First name</label>
                 <div className="glass-input flex gap-2">
-                  <FiUser className="text-white" size={20} />
+                  <FiUser className="text-white" size={15} />
                   <input
                     type="text"
                     placeholder="John"
@@ -86,7 +85,7 @@ const Page = () => {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col md:flex-row gap-5 md:gap-10 ">
+            <div className="flex flex-col md:flex-row gap-5 md:gap-2 ">
               <div className="flex flex-col gap-2 flex-1">
                 <label className="text-gray-200">Email</label>
                 <div className="glass-input flex gap-2">
@@ -107,7 +106,7 @@ const Page = () => {
                 </p>
               </div>
             </div>
-            <div className="flex flex-col md:flex-row gap-5 md:gap-10 ">
+            <div className="flex flex-col md:flex-row gap-5 md:gap-2 ">
               <div className="flex flex-col gap-2 flex-1">
                 <label className="text-gray-200">Confirm Password</label>
                 <PasswordInput register={register("confirmPassword")} />

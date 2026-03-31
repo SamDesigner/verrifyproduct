@@ -21,7 +21,11 @@ export interface LoginResponse {
     refreshToken: string;
     user: User;
   };
-  description?: string;
+  description?: {
+    message?: string;
+    error?: string;
+    statusCode?: number;
+  };
   status: number;
 }
 
@@ -131,8 +135,11 @@ export async function loginUser(payload: LoginUser): Promise<AuthData> {
   });
   const data: LoginResponse = await response.json();
   console.log("This is the Data from the login User", data);
+
   if (!response.ok || !data.success) {
-    throw new Error(data.message);
+    const errorMessage =
+      data.description?.message || data.message || "Login failed";
+    throw new Error(errorMessage);
   }
 
   return data.data;

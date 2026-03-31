@@ -72,7 +72,7 @@ export default function DashboardPage() {
       <div className="max-w-6xl mx-auto flex flex-col gap-6">
 
         {/* Header */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex flex-col-reverse md:flex-row  md:items-start md:justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold text-white tracking-tight">
               {greeting()}, {user?.firstName ?? "there"} 👋
@@ -81,18 +81,21 @@ export default function DashboardPage() {
               Here&apos;s an overview of your property verifications
             </p>
           </div>
-          <button
-            onClick={() => router.push("/dashboard/verifyproperty")}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 shrink-0"
-            style={{ background: "rgba(99,102,241,0.15)", color: "#818cf8", border: "1px solid rgba(99,102,241,0.3)" }}
-            onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(99,102,241,0.25)")}
-            onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(99,102,241,0.15)")}
-          >
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-            New Verification
-          </button>
+          <div className="flex justify-end w-full  md:w-auto ">
+            <button
+              onClick={() => router.push("/dashboard/verifyproperty")}
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150 shrink-0 w-fit "
+              style={{ background: "rgba(99,102,241,0.15)", color: "#818cf8", border: "1px solid rgba(99,102,241,0.3)" }}
+              onMouseEnter={(e) => (e.currentTarget.style.background = "rgba(99,102,241,0.25)")}
+              onMouseLeave={(e) => (e.currentTarget.style.background = "rgba(99,102,241,0.15)")}
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              New Verification
+            </button>
+          </div>
+
         </div>
 
         {/* Stats */}
@@ -109,12 +112,12 @@ export default function DashboardPage() {
 
         {/* Stage History Pipelines */}
         {/* <div className='grid grid-cols-1 md:grid-cols-3 '> */}
-          <DashboardStagePipeline
-            requests={requests}
-            loading={loading}
-            onView={handleView}
-            onStartNew={() => router.push("/dashboard/verifyproperty")}
-          />
+        <DashboardStagePipeline
+          requests={requests}
+          loading={loading}
+          onView={handleView}
+          onStartNew={() => router.push("/dashboard/verifyproperty")}
+        />
         {/* </div> */}
 
 

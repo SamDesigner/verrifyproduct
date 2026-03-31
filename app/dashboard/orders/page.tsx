@@ -40,7 +40,7 @@ export default function UserOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen p-6" style={{ background: "#0f1117" }}>
+    <div className="min-h-screen p-5 bg-gray-900 rounded-xl" >
 
       {/* Header */}
       <div className="mb-6">

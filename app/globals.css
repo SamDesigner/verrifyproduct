@@ -118,7 +118,7 @@
   transition: 0.6s;
 }
 .glass-glow-btn:hover::after {
-  left: 50%;
+  left: 105%;
 }
 
 .glass-input {
