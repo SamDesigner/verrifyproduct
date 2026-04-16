@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getUserVerificationById, submitVerification } from "@/lib/api/verification";
-import { initializeVerificationPayment, getVerificationOrder } from "@/lib/api/payment";
+import { getVerificationOrder } from "@/lib/api/payment";
 import { useAuthReady } from "@/hooks/useAuthReady";
 import { VerificationDetail } from "@/lib/types/verification";
 import { RequestStageBadge } from "@/app/components/myRequests";
@@ -14,6 +14,7 @@ import {
   VerificationDetailSkeleton,
   VerificationStatusBanner,
 } from "@/app/components/userVerification";
+import { ProceedToPaymentButton } from "@/app/components/(Payment)/ProceedToPaymentButton";
 import { toastError, toastSuccess } from "@/lib/toast/toast";
 
 function formatDate(iso: string) {
@@ -51,7 +52,6 @@ const UserVerificationDetailPage = () => {
 
   const canSubmit = detail?.stage === "INITIATED";
   const canUpdate = detail?.stage === "INITIATED";
-  const canPay = detail?.stage === "VERIFICATION_ACCEPTED";
   const canContinuePay = detail?.stage === "PENDING_PAYMENT";
 
   // ── Submit handler ─────────────────────────────────────────────────────
@@ -69,44 +69,13 @@ const UserVerificationDetailPage = () => {
     }
   };
 
-  // ── Initialize payment with Paystack popup ─────────────────────────────
-  const handleInitializePayment = async () => {
-    if (!verificationId) return;
-    setPaying(true);
-    try {
-      const res = await initializeVerificationPayment(verificationId);
-      const accessCode = res.data?.paystackDetails?.access_code;
-
-      if (!accessCode) {
-        toastError("Could not retrieve payment details.");
-        return;
-      }
-
-      const PaystackPop = (await import("@paystack/inline-js")).default;
-      const popup = new PaystackPop();
-      popup.resumeTransaction(accessCode, {
-        onSuccess: async () => {
-          toastSuccess("Payment successful!");
-          await refetchDetail();
-        },
-        onCancel: () => {
-          toastError("Payment cancelled.");
-        },
-      });
-    } catch (err: unknown) {
-      toastError(err instanceof Error ? err.message : "Payment initialization failed");
-    } finally {
-      setPaying(false);
-    }
-  };
-
   // ── Continue payment (already initialized) ─────────────────────────────
   const handleContinuePayment = async () => {
     if (!verificationId) return;
     setPaying(true);
     try {
       const res = await getVerificationOrder(verificationId);
-      const data = res.data as { transactions?: { authorizationUrl?: string | null; paystackReference?: string }[] };
+      const data = res.data as { transactions?: { paystackReference?: string }[] };
       const reference = data?.transactions?.[0]?.paystackReference;
 
       if (!reference) {
@@ -133,13 +102,13 @@ const UserVerificationDetailPage = () => {
   };
 
   return (
-    <div className="min-h-screen p-6" style={{ background: "#0f1117" }}>
+    <div className="min-h-screen p-6 bg-gray-900 rounded-xl">
 
       {/* Header */}
       <div className="mb-6 flex items-center gap-3 flex-wrap">
         <button
           onClick={() => router.back()}
-          className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150 flex-shrink-0"
+          className="flex items-center justify-center w-8 h-8 rounded-lg transition-colors duration-150 shrink-0"
           style={{ background: "#161b27", border: "1px solid rgba(255,255,255,0.07)" }}
           onMouseEnter={(e) => (e.currentTarget.style.background = "#1e2535")}
           onMouseLeave={(e) => (e.currentTarget.style.background = "#161b27")}
@@ -198,28 +167,8 @@ const UserVerificationDetailPage = () => {
               </button>
             )}
 
-            {/* Proceed to Payment */}
-            {canPay && (
-              <button
-                onClick={handleInitializePayment}
-                disabled={paying}
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150"
-                style={{
-                  background: paying ? "rgba(52,211,153,0.08)" : "rgba(52,211,153,0.15)",
-                  color: paying ? "#059669" : "#34d399",
-                  border: "1px solid rgba(52,211,153,0.3)",
-                  cursor: paying ? "not-allowed" : "pointer",
-                }}
-                onMouseEnter={(e) => !paying && (e.currentTarget.style.background = "rgba(52,211,153,0.25)")}
-                onMouseLeave={(e) => !paying && (e.currentTarget.style.background = "rgba(52,211,153,0.15)")}
-              >
-                {paying ? (
-                  <><svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 11-6.219-8.56" /></svg>Processing...</>
-                ) : (
-                  <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>Proceed to Payment</>
-                )}
-              </button>
-            )}
+            {/* Proceed to Payment — navigates to packages page */}
+            <ProceedToPaymentButton verificationId={verificationId} stage={detail.stage} />
 
             {/* Continue Payment */}
             {canContinuePay && (

@@ -13,6 +13,13 @@ export interface InitiateVerificationResponse {
   createdAt: string;
   updatedAt: string;
 }
+export interface VerificationPackagesResponse {
+  success: boolean;
+  message: string;
+  description?: string;
+  status: number;
+  data: unknown; // intentionally loose until we see the real shape
+}
 import {
   InitiateVerificationPayload,
   VerificationDetailResponse,
@@ -159,5 +166,25 @@ export async function updateVerification(
 
   const data: VerificationDetailResponse = await res.json();
   if (!res.ok || !data.success) throw new Error(data.message || "Failed to update verification");
+  return data;
+}
+
+export async function getVerificationPackages(): Promise<VerificationPackagesResponse> {
+  const { accessToken } = useAuthStore.getState();
+  if (!accessToken) throw new Error("User not authenticated");
+
+  const res = await authFetch(`${BASE_URL}/verification-packages`, {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  const data: VerificationPackagesResponse = await res.json();
+  console.log("[getVerificationPackages] response:", data);
+  if (!res.ok || !data.success) {
+    throw new Error(data.message || "Failed to fetch packages");
+  }
   return data;
 }

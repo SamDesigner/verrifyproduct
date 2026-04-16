@@ -136,7 +136,7 @@ const Page = () => {
                 border: `1px solid ${hoveredId === setting.id ? setting.accentBorder : "rgba(255,255,255,0.07)"}`,
                 transition: "all 0.2s ease",
               }}
-              className="rounded-xl p-5 flex items-center gap-5"
+              className="rounded-xl p-5 flex flex-col md:flex-row md:items-center gap-5"
             >
               {/* Icon */}
               <div
@@ -163,7 +163,7 @@ const Page = () => {
                       background: setting.accentBg,
                       color: setting.accent,
                       border: `1px solid ${setting.accentBorder}`,
-                    }}
+                    }} 
                   >
                     {setting.badgeIcon}
                     {setting.badge}
@@ -188,7 +188,7 @@ const Page = () => {
                   <button
                     onClick={handleLogOut}
                     disabled={loading}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150 disabled:opacity-50"
+                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold w-fit transition-all duration-150 disabled:opacity-50"
                     style={{
                       background: "rgba(248,113,113,0.1)",
                       color: "#f87171",
@@ -215,7 +215,7 @@ const Page = () => {
                 ) : (
                   <Link
                     href={setting.location}
-                    className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150"
+                    className="flex items-center gap-2 px-4 py-2 w-fit rounded-lg text-sm font-semibold transition-all duration-150"
                     style={{
                       background: setting.accentBg,
                       color: setting.accent,

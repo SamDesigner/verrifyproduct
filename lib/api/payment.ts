@@ -69,8 +69,44 @@ export interface OrderDetailResponse {
 
 // ── API Functions ──────────────────────────────────────────────────────────
 
+// export async function initializeVerificationPayment(
+//   verificationId: string,
+//   packageId: string,
+// ): Promise<InitializePaymentResponse> {
+//   const { accessToken } = useAuthStore.getState();
+//   if (!accessToken) throw new Error("User not authenticated");
+
+//   console.log("Initializing payment with:", {
+//     verificationId,
+//     packageId,
+//     endpoint: `${BASE_URL}/payment/initialize/verification/${verificationId}`,
+//   });
+
+//   const res = await authFetch(
+//     `${BASE_URL}/payment/initialize/verification/${verificationId}`,
+//     {
+//       method: "POST",
+//       headers: {
+//         Accept: "application/json",
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//       body: JSON.stringify({ packageId }),
+//     },
+//   );
+
+//   const data: InitializePaymentResponse = await res.json();
+//   console.log("Initialize Payment Response:", data);
+
+//   if (!res.ok || !data.success) {
+//     throw new Error(data.message || "Failed to initialize payment");
+//   }
+
+//   return data;
+// }
 export async function initializeVerificationPayment(
   verificationId: string,
+  packageId: string
 ): Promise<InitializePaymentResponse> {
   const { accessToken } = useAuthStore.getState();
   if (!accessToken) throw new Error("User not authenticated");
@@ -81,21 +117,19 @@ export async function initializeVerificationPayment(
       method: "POST",
       headers: {
         Accept: "application/json",
+        "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-    },
+      body: JSON.stringify({ packageId }),
+    }
   );
 
   const data: InitializePaymentResponse = await res.json();
-  console.log("Initialize Payment Response:", data);
-
   if (!res.ok || !data.success) {
     throw new Error(data.message || "Failed to initialize payment");
   }
-
   return data;
 }
-
 export async function getMyOrders(): Promise<MyOrdersResponse> {
   const { accessToken } = useAuthStore.getState();
   if (!accessToken) throw new Error("User not authenticated");
