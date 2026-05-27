@@ -9,7 +9,7 @@ import {
   User,
   // Building2,
   // Warehouse,
-  // Map,
+  Map,
   // Settings,
   ShieldCheck,
   X,
@@ -61,12 +61,12 @@ export const sidebarLinks = [
   //   icon: Warehouse,
   //   roles: ["SUPER_ADMIN"],
   // },
-  // {
-  //   label: "Map",
-  //   href: "/dashboard/admin/view-map",
-  //   icon: Map,
-  //   roles: ["USER", "SUPER_ADMIN"],
-  // },
+  {
+    label: "Map",
+    href: "/dashboard/view-map",
+    icon: Map,
+    roles: ["USER", "SUPER_ADMIN"],
+  },
   // {
   //   label: "Property Management",
   //   href: "/dashboard/admin/property-management",

@@ -1,6 +1,6 @@
 import React from 'react'
 import Map from '@/app/components/(Map)/PropertyMap'
-const page = () => {
+const Page = () => {
   return (
     <div className="p-4">
       <Map />
@@ -8,4 +8,4 @@ const page = () => {
   )
 }
 
-export default page
+export default Page
