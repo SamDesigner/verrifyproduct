@@ -16,7 +16,7 @@ export default function MiniMap() {
     const map = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v12",
-      center: [7.0134, 4.8156], // Port Harcourt [lng, lat]
+      center: [7.0134, 4.8156], // Port Harcourt [lng, lat] [Test Comm]
       zoom: 11,
       interactive: false, // acts like a preview
     });
