@@ -12,7 +12,7 @@ export function ProceedToPaymentButton({
 }: ProceedToPaymentButtonProps) {
   const router = useRouter();
 
-  if (stage !== "VERIFICATION_ACCEPTED") return null;
+  if (stage !== "VERIFICATION_ACCEPTED") return null
 
   const handleClick = () => {
     router.push(`/dashboard/my-requests/${verificationId}/packages`);
