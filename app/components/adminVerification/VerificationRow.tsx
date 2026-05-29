@@ -126,15 +126,15 @@ export function VerificationRow({ item, onView }: VerificationRowProps) {
             </p>
             {item.stageHistory?.length > 0 ? (
               <div className="space-y-2">
-                {(item.stageHistory as Array<{ stage: string; createdAt: string }>)
+                {(item.stageHistory as Array<{ stage: string; completedAt: string }>)
                   .slice(0, 3)
                   .map((h, i) => (
                     <div key={i} className="flex items-center gap-2">
                       <span className="w-1.5 h-1.5 rounded-full bg-slate-500 flex-shrink-0" />
                       <span className="text-slate-300 text-xs">{h.stage}</span>
-                      {h.createdAt && (
+                      {h.completedAt && (
                         <span className="text-slate-500 text-xs ml-auto">
-                          {formatDate(h.createdAt)}
+                          {formatDate(h.completedAt)}
                         </span>
                       )}
                     </div>
