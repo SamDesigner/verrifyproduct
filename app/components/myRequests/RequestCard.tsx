@@ -2,13 +2,13 @@
 import { MyRequestItem } from "@/lib/types/verification";
 import { RequestStageBadge } from "./Requeststagebadge";
 
-
+// import { useRouter } from "next/navigation";
 
 
 import { useState } from "react";
 
 
-import { initializeVerificationPayment, getVerificationOrder } from "@/lib/api/payment";
+import {  getVerificationOrder } from "@/lib/api/payment";
 import { toastError, toastSuccess } from "@/lib/toast/toast";
 
 interface RequestCardProps {
@@ -55,36 +55,36 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
   const canContinuePay = item.stage === "PENDING_PAYMENT";
   const currentStageIdx = STAGE_ORDER.indexOf(item.stage);
   const progressSteps = STAGE_ORDER.slice(0, 4);
-
+// const router = useRouter();
   // ── Initialize payment with Paystack popup ─────────────────────────────
-  const handleInitializePayment = async () => {
-    setPaying(true);
-    try {
-      const res = await initializeVerificationPayment(item.id);
-      const accessCode = res.data?.paystackDetails?.access_code;
+  // const handleInitializePayment = async () => {
+  //   setPaying(true);
+  //   try {
+  //     const res = await initializeVerificationPayment(item.id);
+  //     const accessCode = res.data?.paystackDetails?.access_code;
 
-      if (!accessCode) {
-        toastError("Could not retrieve payment details.");
-        return;
-      }
+  //     if (!accessCode) {
+  //       toastError("Could not retrieve payment details.");
+  //       return;
+  //     }
 
-      const PaystackPop = (await import("@paystack/inline-js")).default;
-      const popup = new PaystackPop();
-      popup.resumeTransaction(accessCode, {
-        onSuccess: async () => {
-          toastSuccess("Payment successful!");
-          onView(item.id); // Navigate to detail page to see updated stage
-        },
-        onCancel: () => {
-          toastError("Payment cancelled.");
-        },
-      });
-    } catch (err: unknown) {
-      toastError(err instanceof Error ? err.message : "Payment initialization failed");
-    } finally {
-      setPaying(false);
-    }
-  };
+  //     const PaystackPop = (await import("@paystack/inline-js")).default;
+  //     const popup = new PaystackPop();
+  //     popup.resumeTransaction(accessCode, {
+  //       onSuccess: async () => {
+  //         toastSuccess("Payment successful!");
+  //         onView(item.id); 
+  //       },
+  //       onCancel: () => {
+  //         toastError("Payment cancelled.");
+  //       },
+  //     });
+  //   } catch (err: unknown) {
+  //     toastError(err instanceof Error ? err.message : "Payment initialization failed");
+  //   } finally {
+  //     setPaying(false);
+  //   }
+  // };
 
   // ── Continue payment ───────────────────────────────────────────────────
   const handleContinuePayment = async () => {
@@ -189,7 +189,7 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
 
         {/* Pay Now */}
         {canPay && (
-          <button onClick={handleInitializePayment} disabled={paying}
+          <button onClick={() => onView(item.id)} disabled={paying}
             className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150"
             style={{
               background: paying ? "rgba(52,211,153,0.08)" : "rgba(52,211,153,0.12)",
