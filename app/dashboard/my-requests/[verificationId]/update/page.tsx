@@ -68,26 +68,6 @@ const UserVerificationDetailPage = () => {
     }
   };
 
-  // ── Initialize payment (first time) ───────────────────────────────────
-  // const handleInitializePayment = async () => {
-  //   if (!verificationId) return;
-  //   setPaying(true);
-  //   try {
-  //     const res = await initializeVerificationPayment(verificationId);
-  //     const authUrl = res.data?.paystackDetails?.authorization_url;
-  //     if (authUrl) {
-  //       window.location.href = authUrl;
-  //     } else {
-  //       console.log("Payment response data:", res.data);
-  //       toastError("Could not retrieve payment URL. Check console for details.");
-  //     }
-  //   } catch (err: unknown) {
-  //     toastError(err instanceof Error ? err.message : "Payment initialization failed");
-  //   } finally {
-  //     setPaying(false);
-  //   }
-  // };
-
   // ── Continue payment (already initialized) ────────────────────────────
   const handleContinuePayment = async () => {
     if (!verificationId) return;
