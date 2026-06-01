@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getUserVerificationById, submitVerification } from "@/lib/api/verification";
-import { initializeVerificationPayment, getVerificationOrder } from "@/lib/api/payment";
+import { getVerificationOrder } from "@/lib/api/payment";
 import { useAuthReady } from "@/hooks/useAuthReady";
 import { VerificationDetail } from "@/lib/types/verification";
 import { RequestStageBadge } from "@/app/components/myRequests";
@@ -69,24 +69,24 @@ const UserVerificationDetailPage = () => {
   };
 
   // ── Initialize payment (first time) ───────────────────────────────────
-  const handleInitializePayment = async () => {
-    if (!verificationId) return;
-    setPaying(true);
-    try {
-      const res = await initializeVerificationPayment(verificationId);
-      const authUrl = res.data?.paystackDetails?.authorization_url;
-      if (authUrl) {
-        window.location.href = authUrl;
-      } else {
-        console.log("Payment response data:", res.data);
-        toastError("Could not retrieve payment URL. Check console for details.");
-      }
-    } catch (err: unknown) {
-      toastError(err instanceof Error ? err.message : "Payment initialization failed");
-    } finally {
-      setPaying(false);
-    }
-  };
+  // const handleInitializePayment = async () => {
+  //   if (!verificationId) return;
+  //   setPaying(true);
+  //   try {
+  //     const res = await initializeVerificationPayment(verificationId);
+  //     const authUrl = res.data?.paystackDetails?.authorization_url;
+  //     if (authUrl) {
+  //       window.location.href = authUrl;
+  //     } else {
+  //       console.log("Payment response data:", res.data);
+  //       toastError("Could not retrieve payment URL. Check console for details.");
+  //     }
+  //   } catch (err: unknown) {
+  //     toastError(err instanceof Error ? err.message : "Payment initialization failed");
+  //   } finally {
+  //     setPaying(false);
+  //   }
+  // };
 
   // ── Continue payment (already initialized) ────────────────────────────
   const handleContinuePayment = async () => {
@@ -185,7 +185,7 @@ const UserVerificationDetailPage = () => {
             {/* Proceed to Payment — VERIFICATION_ACCEPTED */}
             {canPay && (
               <button
-                onClick={handleInitializePayment}
+                onClick={() => router.push(`/dashboard/my-requests/${verificationId}/packages`)}
                 disabled={paying}
                 className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-150"
                 style={{
@@ -200,7 +200,7 @@ const UserVerificationDetailPage = () => {
                 {paying ? (
                   <><svg className="animate-spin" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 11-6.219-8.56" /></svg>Processing...</>
                 ) : (
-                  <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>Proceed to Payment</>
+                  <><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>Proceed to Packages</>
                 )}
               </button>
             )}
