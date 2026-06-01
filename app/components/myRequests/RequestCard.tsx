@@ -1,10 +1,6 @@
 "use client";
 import { MyRequestItem } from "@/lib/types/verification";
 import { RequestStageBadge } from "./Requeststagebadge";
-
-// import { useRouter } from "next/navigation";
-
-
 import { useState } from "react";
 
 
@@ -55,38 +51,8 @@ export function RequestCard({ item, onView, onSubmit }: RequestCardProps) {
   const canContinuePay = item.stage === "PENDING_PAYMENT";
   const currentStageIdx = STAGE_ORDER.indexOf(item.stage);
   const progressSteps = STAGE_ORDER.slice(0, 4);
-// const router = useRouter();
-  // ── Initialize payment with Paystack popup ─────────────────────────────
-  // const handleInitializePayment = async () => {
-  //   setPaying(true);
-  //   try {
-  //     const res = await initializeVerificationPayment(item.id);
-  //     const accessCode = res.data?.paystackDetails?.access_code;
 
-  //     if (!accessCode) {
-  //       toastError("Could not retrieve payment details.");
-  //       return;
-  //     }
-
-  //     const PaystackPop = (await import("@paystack/inline-js")).default;
-  //     const popup = new PaystackPop();
-  //     popup.resumeTransaction(accessCode, {
-  //       onSuccess: async () => {
-  //         toastSuccess("Payment successful!");
-  //         onView(item.id); 
-  //       },
-  //       onCancel: () => {
-  //         toastError("Payment cancelled.");
-  //       },
-  //     });
-  //   } catch (err: unknown) {
-  //     toastError(err instanceof Error ? err.message : "Payment initialization failed");
-  //   } finally {
-  //     setPaying(false);
-  //   }
-  // };
-
-  // ── Continue payment ───────────────────────────────────────────────────
+  // Continue payment
   const handleContinuePayment = async () => {
     setPaying(true);
     try {
